@@ -1,11 +1,5 @@
 import onChange from 'on-change';
 
-// const renderFeeds = (xml) => {
-//   const channelTitle = xml.querySelector('channel > title');
-//   const channelDescription = xml.querySelector('channel > description');
-//   console.log(channelTitle.textContent);
-//   console.log(channelDescription.innerText);
-// };
 const initView = (state) => {
   const submitButton = document.querySelector('[aria-label="add"]');
   const input = document.querySelector('[aria-label="url"]');

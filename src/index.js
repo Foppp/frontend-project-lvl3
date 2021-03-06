@@ -30,7 +30,7 @@ const makeRssData = (watchedState, xml) => {
       description: postDescription.textContent,
       link: postLink.textContent,
     };
-    watchedState.rssData.posts.push(post);
+    watchedState.rssData.posts.unshift(post);
   });
 };
 
@@ -61,7 +61,7 @@ const run = () => {
       url: yup
         .string()
         .required()
-        .url()
+        .url('This URL is not valid!')
         .test('is-exist', 'This URL already exist in feed!', (val) => !watchedState.rssUrl.includes(val)),
     });
     try {
@@ -93,12 +93,13 @@ const run = () => {
     } else {
       watchedState.form.valid = true;
       watchedState.form.error = null;
+
       const encodedUrl = `https://api.allorigins.win/get?url=${formUrl}`;
       axios(encodedUrl).then((response) => {
         const xmlDoc = parseXml(response.data.contents);
         watchedState.form.processState = 'finished';
         watchedState.form.processSuccess = true;
-        watchedState.rssUrl.push(formUrl);
+        watchedState.rssUrl.unshift(formUrl);
         makeRssData(watchedState, xmlDoc);
       }).catch((err) => {
         watchedState.form.processState = 'failed';
