@@ -14,7 +14,13 @@ const initView = (state) => {
     if (path === 'form.errors') {
       console.log(value);
     }
-    if (path === 'urlFeeds') {
+    if (path === 'rssUrl') {
+      console.log(value);
+    }
+    if (path === 'rssData.posts') {
+      console.log(value);
+    }
+    if (path === 'rssData.feeds') {
       console.log(value);
     }
   });

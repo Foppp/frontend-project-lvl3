@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import 'jquery';
 import 'popper.js';
 import 'bootstrap';
@@ -8,16 +9,45 @@ import axios from 'axios';
 import parseXml from './parser.js';
 import initView from './view.js';
 
-// const getRss = () => {
-//   const url = 'http://lorem-rss.herokuapp.com/feed';
-//   const encodedUrl = `https://api.allorigins.win/get?url=${url}`;
-//   axios(encodedUrl).then((response) => {
-//     const xmlDoc = parseXml(response.data.contents);
-//     console.log(xmlDoc);
-//   }).catch(console.log);
-// };
+const makeRssData = (watchedState, xml) => {
+  const id = watchedState.rssUrl.length;
+  const feedTitle = xml.querySelector('channel > title');
+  const feedDescription = xml.querySelector('channel > description');
+  const feed = {
+    id,
+    title: feedTitle.textContent,
+    description: feedDescription.textContent,
+  };
+  watchedState.rssData.feeds.unshift(feed);
+  const items = xml.querySelectorAll('channel > item');
+  items.forEach((item) => {
+    const postTitle = item.querySelector('title');
+    const postDescription = item.querySelector('description');
+    const postLink = item.querySelector('link');
+    const post = {
+      id,
+      title: postTitle.textContent,
+      description: postDescription.textContent,
+      link: postLink.textContent,
+    };
+    watchedState.rssData.posts.unshift(post);
+  });
+};
 
-// getRss();
+const getRss = (watchedState, formUrl) => {
+  if (watchedState.rssUrl.includes(formUrl)) {
+    throw new Error('This URL already exist!');
+  }
+  const encodedUrl = `https://api.allorigins.win/get?url=${formUrl}`;
+  axios(encodedUrl).then((response) => {
+    const xmlDoc = parseXml(response.data.contents);
+    watchedState.rssUrl.push(formUrl);
+    makeRssData(watchedState, xmlDoc);
+  }).catch((error) => {
+    watchedState.form.errors = error.message;
+  });
+};
+
 const run = () => {
   const state = {
     form: {
@@ -29,7 +59,11 @@ const run = () => {
       valid: true,
       errors: [],
     },
-    urlFeeds: [],
+    rssUrl: [],
+    rssData: {
+      feeds: [],
+      posts: [],
+    },
   };
 
   const schema = yup.object().shape({
@@ -54,11 +88,12 @@ const run = () => {
       schema.validateSync(watchedState.form.fields);
       watchedState.form.valid = true;
       watchedState.form.errors = [];
-      watchedState.urlFeeds = formUrl;
+      getRss(watchedState, formUrl);
     } catch (err) {
       watchedState.form.valid = false;
       watchedState.form.errors = err.message;
     }
   });
 };
+
 run();
