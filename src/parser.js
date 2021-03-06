@@ -3,7 +3,7 @@ const parseXml = (data) => {
   const xmlData = parser.parseFromString(data, 'application/xml');
   const parsererror = xmlData.querySelector('parsererror');
   if (parsererror) {
-    throw new Error('xml not valid');
+    throw new Error('This resourse doesn`t contains valid XML!');
   }
   return xmlData;
 };
