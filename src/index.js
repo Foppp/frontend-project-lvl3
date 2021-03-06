@@ -13,13 +13,13 @@ const makeRssData = (watchedState, xml) => {
   const id = watchedState.rssUrl.length;
   const feedTitle = xml.querySelector('channel > title');
   const feedDescription = xml.querySelector('channel > description');
+  const items = xml.querySelectorAll('channel > item');
   const feed = {
     id,
     title: feedTitle.textContent,
     description: feedDescription.textContent,
   };
   watchedState.rssData.feeds.unshift(feed);
-  const items = xml.querySelectorAll('channel > item');
   items.forEach((item) => {
     const postTitle = item.querySelector('title');
     const postDescription = item.querySelector('description');
@@ -30,21 +30,7 @@ const makeRssData = (watchedState, xml) => {
       description: postDescription.textContent,
       link: postLink.textContent,
     };
-    watchedState.rssData.posts.unshift(post);
-  });
-};
-
-const getRss = (watchedState, formUrl) => {
-  if (watchedState.rssUrl.includes(formUrl)) {
-    throw new Error('This URL already exist!');
-  }
-  const encodedUrl = `https://api.allorigins.win/get?url=${formUrl}`;
-  axios(encodedUrl).then((response) => {
-    const xmlDoc = parseXml(response.data.contents);
-    watchedState.rssUrl.push(formUrl);
-    makeRssData(watchedState, xmlDoc);
-  }).catch((error) => {
-    watchedState.form.errors = error.message;
+    watchedState.rssData.posts.push(post);
   });
 };
 
@@ -53,11 +39,12 @@ const run = () => {
     form: {
       processState: 'filling',
       processError: null,
+      processSuccess: false,
       fields: {
         url: '',
       },
       valid: true,
-      errors: [],
+      error: null,
     },
     rssUrl: [],
     rssData: {
@@ -65,14 +52,25 @@ const run = () => {
       posts: [],
     },
   };
-
-  const schema = yup.object().shape({
-    url: yup.string().required().url(),
-  });
-
   const form = document.querySelector('form');
   const input = document.querySelector('input');
   const watchedState = initView(state);
+
+  const validate = (value) => {
+    const schema = yup.object().shape({
+      url: yup
+        .string()
+        .required()
+        .url()
+        .test('is-exist', 'This URL already exist in feed!', (val) => !watchedState.rssUrl.includes(val)),
+    });
+    try {
+      schema.validateSync(value);
+      return null;
+    } catch (e) {
+      return e.message;
+    }
+  };
 
   input.addEventListener('input', (e) => {
     const inputData = e.target.value;
@@ -84,14 +82,28 @@ const run = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formUrl = formData.get('url');
-    try {
-      schema.validateSync(watchedState.form.fields);
-      watchedState.form.valid = true;
-      watchedState.form.errors = [];
-      getRss(watchedState, formUrl);
-    } catch (err) {
+
+    watchedState.form.processState = 'sending';
+    const error = validate(watchedState.form.fields);
+
+    if (error) {
       watchedState.form.valid = false;
-      watchedState.form.errors = err.message;
+      watchedState.form.error = error;
+      watchedState.form.processState = 'failed';
+    } else {
+      watchedState.form.valid = true;
+      watchedState.form.error = null;
+      const encodedUrl = `https://api.allorigins.win/get?url=${formUrl}`;
+      axios(encodedUrl).then((response) => {
+        const xmlDoc = parseXml(response.data.contents);
+        watchedState.form.processState = 'finished';
+        watchedState.form.processSuccess = true;
+        watchedState.rssUrl.push(formUrl);
+        makeRssData(watchedState, xmlDoc);
+      }).catch((err) => {
+        watchedState.form.processState = 'failed';
+        watchedState.form.processError = err.message;
+      });
     }
   });
 };
