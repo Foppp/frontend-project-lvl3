@@ -10,22 +10,21 @@ import parseXml from './parser.js';
 import initView from './view.js';
 
 const makeRssData = (watchedState, xml) => {
-  const id = watchedState.rssUrl.length;
   const feedTitle = xml.querySelector('channel > title');
   const feedDescription = xml.querySelector('channel > description');
   const items = xml.querySelectorAll('channel > item');
   const feed = {
-    id,
     title: feedTitle.textContent,
     description: feedDescription.textContent,
   };
   watchedState.rssData.feeds.unshift(feed);
   items.forEach((item) => {
+    const id = watchedState.rssData.posts.length;
     const postTitle = item.querySelector('title');
     const postDescription = item.querySelector('description');
     const postLink = item.querySelector('link');
     const post = {
-      id,
+      id: id + 1,
       title: postTitle.textContent,
       description: postDescription.textContent,
       link: postLink.textContent,
@@ -50,6 +49,9 @@ const run = () => {
     rssData: {
       feeds: [],
       posts: [],
+    },
+    modalWindow: {
+      activeId: null,
     },
   };
   const form = document.querySelector('form');
@@ -95,6 +97,7 @@ const run = () => {
       watchedState.form.error = null;
 
       const encodedUrl = `https://api.allorigins.win/get?url=${formUrl}`;
+
       axios(encodedUrl).then((response) => {
         const xmlDoc = parseXml(response.data.contents);
         watchedState.form.processState = 'finished';

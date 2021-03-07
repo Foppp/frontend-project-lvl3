@@ -1,6 +1,8 @@
 import onChange from 'on-change';
 
 const initView = (state) => {
+  const body = document.querySelector('body');
+  const modal = document.querySelector('.modal');
   const submitButton = document.querySelector('[aria-label="add"]');
   const input = document.querySelector('[aria-label="url"]');
   const feedback = document.querySelector('.feedback');
@@ -8,6 +10,22 @@ const initView = (state) => {
   const posts = document.querySelector('.posts');
   const form = document.querySelector('form');
 
+  const openModal = (element, post) => {
+    const modalTitle = document.querySelector('.modal-title');
+    const modalBody = document.querySelector('.modal-body');
+    const readMoreButton = document.querySelector('.modal-footer > a');
+    readMoreButton.setAttribute('href', post.link);
+    modalTitle.textContent = post.title;
+    modalBody.textContent = post.description;
+    body.classList.add('modal-open');
+    element.classList.add('fade', 'show');
+    element.setAttribute('style', 'display: block;');
+  };
+  const closeModal = (element) => {
+    body.classList.remove('modal-open');
+    element.classList.remove('fade', 'show');
+    element.setAttribute('style', 'display: none;');
+  };
   const renderFeeds = (feedsData) => {
     const h2 = document.createElement('h2');
     const ul = document.createElement('ul');
@@ -62,6 +80,19 @@ const initView = (state) => {
     posts.innerHTML = '';
     posts.append(h2);
     posts.append(ul);
+    const buttons = document.querySelectorAll('[data-toggle="modal"]');
+    const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
+    buttons.forEach((button) => {
+      button.addEventListener('click', (e) => {
+        const targetId = e.target.dataset.id;
+        const [post] = state.rssData.posts
+          .filter((el) => el.id === Number(targetId));
+        openModal(modal, post);
+      });
+      closeButtons.forEach((b) => {
+        b.addEventListener('click', () => closeModal(modal));
+      });
+    });
   };
 
   const processStateHandler = (processState) => {
@@ -107,6 +138,7 @@ const initView = (state) => {
       renderError(value);
     }
     if (path === 'rssData.feeds') {
+      console.log(value);
       renderFeeds(value);
     }
     if (path === 'rssData.posts') {
