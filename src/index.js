@@ -98,7 +98,7 @@ const run = () => {
       axios(encodedUrl).then((response) => {
         const xmlDoc = parseXml(response.data.contents);
         watchedState.form.processState = 'finished';
-        watchedState.form.processSuccess = true;
+        watchedState.form.processError = null;
         watchedState.rssUrl.unshift(formUrl);
         makeRssData(watchedState, xmlDoc);
       }).catch((err) => {
