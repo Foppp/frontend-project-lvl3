@@ -6,6 +6,7 @@ const initView = (state) => {
   const feedback = document.querySelector('.feedback');
   const feeds = document.querySelector('.feeds');
   const posts = document.querySelector('.posts');
+  const form = document.querySelector('form');
 
   const renderFeeds = (feedsData) => {
     const h2 = document.createElement('h2');
@@ -20,8 +21,8 @@ const initView = (state) => {
       const p = document.createElement('p');
       h3.textContent = title;
       p.textContent = description;
-      li.append(h3);
-      li.append(p);
+      li.appendChild(h3);
+      li.appendChild(p);
       ul.appendChild(li);
     });
     feeds.innerHTML = '';
@@ -42,7 +43,7 @@ const initView = (state) => {
       li.setAttribute('class', 'list-group-item');
       li.classList.add('d-flex', 'justify-content-between', 'align-items-start');
       a.setAttribute('href', link);
-      a.setAttribute('class', 'font-weight-normal');
+      a.setAttribute('class', 'font-weight-bold');
       a.setAttribute('data-id', id);
       a.setAttribute('target', '_blank');
       a.setAttribute('rel', 'noopener noreferrer');
@@ -54,9 +55,9 @@ const initView = (state) => {
       button.setAttribute('data-toggle', 'modal');
       button.setAttribute('data-target', '#modal');
       button.textContent = 'Preview';
-      li.append(a);
-      li.append(button);
-      ul.append(li);
+      li.appendChild(a);
+      li.appendChild(button);
+      ul.appendChild(li);
     });
     posts.innerHTML = '';
     posts.append(h2);
@@ -80,10 +81,22 @@ const initView = (state) => {
       case 'finished':
         submitButton.disabled = false;
         input.disabled = false;
+        feedback.removeAttribute('class');
+        feedback.classList.add('feedback', 'text-success');
+        input.classList.remove('is-invalid');
+        feedback.textContent = 'RSS was downloaded succsessfully!';
+        form.reset();
+        input.focus();
         break;
       default:
         throw new Error(`Uknown state ${processState}`);
     }
+  };
+  const renderError = (error) => {
+    feedback.removeAttribute('class');
+    feedback.classList.add('feedback', 'text-danger');
+    input.classList.add('is-invalid');
+    feedback.textContent = error;
   };
 
   const watchedState = onChange(state, (path, value) => {
@@ -91,16 +104,7 @@ const initView = (state) => {
       processStateHandler(value);
     }
     if (path === 'form.error' || path === 'form.processError') {
-      feedback.removeAttribute('class');
-      feedback.classList.add('feedback', 'text-danger');
-      feedback.textContent = value;
-    }
-    if (path === 'form.processSuccess') {
-      if (value) {
-        feedback.removeAttribute('class');
-        feedback.classList.add('feedback', 'text-success');
-        feedback.textContent = 'RSS was downloaded succsessfully!';
-      }
+      renderError(value);
     }
     if (path === 'rssData.feeds') {
       renderFeeds(value);
