@@ -11,21 +11,28 @@ const initView = (state) => {
   const form = document.querySelector('form');
 
   const openModal = (element, post) => {
+    body.classList.add('modal-open');
+    const div = document.createElement('div');
+    div.setAttribute('class', 'modal-backdrop');
+    div.classList.add('fade', 'show');
     const modalTitle = document.querySelector('.modal-title');
     const modalBody = document.querySelector('.modal-body');
     const readMoreButton = document.querySelector('.modal-footer > a');
     readMoreButton.setAttribute('href', post.link);
     modalTitle.textContent = post.title;
     modalBody.textContent = post.description;
-    body.classList.add('modal-open');
-    element.classList.add('fade', 'show');
+    element.classList.add('show');
+    element.removeAttribute('aria-hidden');
+    element.setAttribute('aria-modal', 'true');
     element.setAttribute('style', 'display: block;');
   };
   const closeModal = (element) => {
-    body.classList.remove('modal-open');
-    element.classList.remove('fade', 'show');
+    element.classList.remove('show');
     element.setAttribute('style', 'display: none;');
+    element.setAttribute('aria-hidden', 'true');
+    element.removeAttribute('aria-modal');
   };
+
   const renderFeeds = (feedsData) => {
     const h2 = document.createElement('h2');
     const ul = document.createElement('ul');
@@ -41,20 +48,19 @@ const initView = (state) => {
       p.textContent = description;
       li.appendChild(h3);
       li.appendChild(p);
-      ul.appendChild(li);
+      ul.append(li);
     });
     feeds.innerHTML = '';
     feeds.appendChild(h2);
     feeds.appendChild(ul);
   };
+
   const renderPosts = (postsData) => {
     const h2 = document.createElement('h2');
     const ul = document.createElement('ul');
     ul.setAttribute('class', 'list-group');
     h2.textContent = 'Posts';
-    postsData.forEach(({
-      id, title, description, link,
-    }) => {
+    postsData.forEach(({ id, title, link }) => {
       const li = document.createElement('li');
       const a = document.createElement('a');
       const button = document.createElement('button');
@@ -71,15 +77,15 @@ const initView = (state) => {
       button.classList.add('btn-primary', 'btn-sm');
       button.setAttribute('data-id', id);
       button.setAttribute('data-toggle', 'modal');
-      button.setAttribute('data-target', '#modal');
+      button.setAttribute('data-target', '#exampleModalCenter');
       button.textContent = 'Preview';
       li.appendChild(a);
       li.appendChild(button);
-      ul.appendChild(li);
+      ul.prepend(li);
     });
     posts.innerHTML = '';
-    posts.append(h2);
-    posts.append(ul);
+    posts.appendChild(h2);
+    posts.appendChild(ul);
     const buttons = document.querySelectorAll('[data-toggle="modal"]');
     const closeButtons = document.querySelectorAll('[data-dismiss="modal"]');
     buttons.forEach((button) => {
@@ -115,7 +121,7 @@ const initView = (state) => {
         feedback.removeAttribute('class');
         feedback.classList.add('feedback', 'text-success');
         input.classList.remove('is-invalid');
-        feedback.textContent = 'RSS was downloaded succsessfully!';
+        feedback.textContent = 'RSS was loaded succsessfully!';
         form.reset();
         input.focus();
         break;
@@ -138,7 +144,6 @@ const initView = (state) => {
       renderError(value);
     }
     if (path === 'rssData.feeds') {
-      console.log(value);
       renderFeeds(value);
     }
     if (path === 'rssData.posts') {
