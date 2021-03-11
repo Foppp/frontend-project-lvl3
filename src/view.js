@@ -9,28 +9,32 @@ const initView = (state) => {
   const feeds = document.querySelector('.feeds');
   const posts = document.querySelector('.posts');
   const form = document.querySelector('form');
+  const footer = document.querySelector('footer');
 
   const openModal = (element, post) => {
+    const modalTitle = document.querySelector('.modal-title');
+    const modalBody = document.querySelector('.modal-body');
+    const readMoreButton = document.querySelector('.modal-footer > a');
+    modalTitle.textContent = post.title;
+    modalBody.textContent = post.description;
+    readMoreButton.setAttribute('href', post.link);
     body.classList.add('modal-open');
     const div = document.createElement('div');
     div.setAttribute('class', 'modal-backdrop');
     div.classList.add('fade', 'show');
-    const modalTitle = document.querySelector('.modal-title');
-    const modalBody = document.querySelector('.modal-body');
-    const readMoreButton = document.querySelector('.modal-footer > a');
-    readMoreButton.setAttribute('href', post.link);
-    modalTitle.textContent = post.title;
-    modalBody.textContent = post.description;
-    element.classList.add('show');
+    footer.after(div);
     element.removeAttribute('aria-hidden');
     element.setAttribute('aria-modal', 'true');
     element.setAttribute('style', 'display: block;');
+    element.classList.add('show');
   };
   const closeModal = (element) => {
     element.classList.remove('show');
     element.setAttribute('style', 'display: none;');
     element.setAttribute('aria-hidden', 'true');
     element.removeAttribute('aria-modal');
+    const div = document.querySelector('.modal-backdrop');
+    div.remove();
   };
 
   const renderFeeds = (feedsData) => {
@@ -77,7 +81,7 @@ const initView = (state) => {
       button.classList.add('btn-primary', 'btn-sm');
       button.setAttribute('data-id', id);
       button.setAttribute('data-toggle', 'modal');
-      button.setAttribute('data-target', '#exampleModalCenter');
+      button.setAttribute('data-target', '#modal');
       button.textContent = 'Preview';
       li.appendChild(a);
       li.appendChild(button);
