@@ -6,6 +6,8 @@ import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as yup from 'yup';
 import axios from 'axios';
+import i18next from 'i18next';
+import resources from './locales';
 import parseXml from './parser.js';
 import initView from './view.js';
 
@@ -19,7 +21,7 @@ const collectFeeds = (watchedState, xml) => {
   watchedState.rssData.feeds.unshift(feed);
 };
 const collectPosts = (watchedState, xml, currentTime = null) => {
-  const result = [];
+  const collectedPosts = [];
   const items = xml.querySelectorAll('channel > item');
   items.forEach((item) => {
     watchedState.rssData.postsCountId += 1;
@@ -38,45 +40,63 @@ const collectPosts = (watchedState, xml, currentTime = null) => {
     };
     if (currentTime) {
       if (Date.parse(publishTime) > currentTime) {
-        result.unshift(post);
+        collectedPosts.unshift(post);
       }
     } else {
-      result.unshift(post);
+      collectedPosts.unshift(post);
     }
   });
-  watchedState.rssData.posts.push(...result);
+  watchedState.rssData.posts.push(...collectedPosts);
 };
+
+const encodeUrl = (url) => `https://api.allorigins.win/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
 const reloadXml = (watchedState) => {
   const urlList = watchedState.rssData.url;
   Object.entries(urlList).forEach(([url, loadTime]) => {
-    const encodedUrl = `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
+    const encodedUrl = encodeUrl(url);
     axios(encodedUrl).then((response) => {
       const xmlDoc = parseXml(response.data.contents);
       collectPosts(watchedState, xmlDoc, loadTime);
       watchedState.rssData.url[url] = Date.now();
-    }).catch(() => {});
+    }).catch(() => {
+      watchedState.form.processState = 'failed';
+    });
   });
 };
 
 const loadXml = (watchedState, url) => {
-  const encodedUrl = `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
+  const encodedUrl = encodeUrl(url);
   axios(encodedUrl).then((response) => {
     const xmlDoc = parseXml(response.data.contents);
+    const parsererror = xmlDoc.querySelector('parsererror');
+    if (parsererror) {
+      throw new Error(i18next.t('errors.xml'));
+    }
     watchedState.form.processError = null;
-    watchedState.rssData.status = null;
     watchedState.form.processState = 'finished';
+    watchedState.rssData.url[url] = Date.now();
     collectFeeds(watchedState, xmlDoc);
     collectPosts(watchedState, xmlDoc);
-    watchedState.rssData.status = 'loaded';
   }).catch((err) => {
+    if (err.request) {
+      watchedState.form.processError = i18next.t('errors.network');
+    } else {
+      watchedState.form.processError = err.message;
+    }
     watchedState.form.processState = 'failed';
-    watchedState.form.processError = err.message;
   });
 };
 
 const run = () => {
+  const defaultLanguage = 'en';
+  i18next.init({
+    lng: defaultLanguage,
+    debug: false,
+    resources,
+  });
   const state = {
+    currentLanguage: 'en',
     form: {
       processState: 'filling',
       processError: null,
@@ -93,7 +113,6 @@ const run = () => {
       postsCountId: 0,
     },
   };
-
   const form = document.querySelector('form');
   const input = document.querySelector('input');
   const watchedState = initView(state);
@@ -102,9 +121,8 @@ const run = () => {
     const schema = yup.object().shape({
       url: yup
         .string()
-        .required()
-        .url('This URL is not valid!')
-        .test('is-exist', 'This URL already exist in feed!', (val) => !watchedState.rssData.url[val]),
+        .url(i18next.t('errors.url'))
+        .test('doubleUrl', i18next.t('errors.doubleUrl'), (val) => !watchedState.rssData.url[val]),
     });
     try {
       schema.validateSync(value);
@@ -135,7 +153,6 @@ const run = () => {
     } else {
       watchedState.form.valid = true;
       watchedState.form.error = null;
-      watchedState.rssData.url[formUrl] = Date.now();
 
       loadXml(watchedState, formUrl);
     }
