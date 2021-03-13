@@ -1,46 +1,23 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 
-const body = document.querySelector('body');
-const modalWindow = document.querySelector('.modal');
 const submitButton = document.querySelector('[aria-label="add"]');
 const input = document.querySelector('[aria-label="url"]');
 const feedback = document.querySelector('.feedback');
 const feeds = document.querySelector('.feeds');
 const posts = document.querySelector('.posts');
 const form = document.querySelector('form');
-const footer = document.querySelector('footer');
 
-const openModal = (element, post) => {
+const openModal = (content) => {
   const modalTitle = document.querySelector('.modal-title');
   const modalBody = document.querySelector('.modal-body');
   const closeButton = document.querySelector('.btn-secondary');
   const readMoreButton = document.querySelector('.full-article');
-  readMoreButton.setAttribute('href', post.link);
-  modalTitle.textContent = post.title;
-  modalBody.textContent = post.description;
+  readMoreButton.setAttribute('href', content.link);
+  modalTitle.textContent = content.title;
+  modalBody.textContent = content.description;
   closeButton.textContent = i18next.t('buttons.modalWindow.close');
   readMoreButton.textContent = i18next.t('buttons.modalWindow.readMore');
-  body.classList.add('modal-open');
-  const modalBackDrop = document.createElement('div');
-  modalBackDrop.setAttribute('class', 'modal-backdrop');
-  modalBackDrop.classList.add('fade', 'show');
-  footer.after(modalBackDrop);
-  element.removeAttribute('aria-hidden');
-  element.setAttribute('aria-modal', 'true');
-  element.setAttribute('style', 'display: block;');
-  element.classList.add('show');
-};
-
-const closeModal = (element) => {
-  element.classList.remove('show');
-  element.setAttribute('style', 'display: none;');
-  element.setAttribute('aria-hidden', 'true');
-  element.removeAttribute('aria-modal');
-  const modalBackDrop = document.querySelector('.modal-backdrop');
-  if (modalBackDrop) {
-    modalBackDrop.remove();
-  }
 };
 
 const renderFeeds = (feedsData) => {
@@ -98,18 +75,13 @@ const renderPosts = (postsData, state) => {
   posts.appendChild(ul);
 
   const modalOpenButtons = document.querySelectorAll('[data-toggle="modal"]');
-  const modalCloseButtons = document.querySelectorAll('[data-dismiss="modal"]');
 
   modalOpenButtons.forEach((openBtn) => {
     openBtn.addEventListener('click', (e) => {
       const targetId = e.target.dataset.id;
       const [modalContent] = state.rssData.posts.filter((el) => el.id === Number(targetId));
-      openModal(modalWindow, modalContent);
+      openModal(modalContent);
     });
-  });
-
-  modalCloseButtons.forEach((closeBtn) => {
-    closeBtn.addEventListener('click', () => closeModal(modalWindow));
   });
 };
 

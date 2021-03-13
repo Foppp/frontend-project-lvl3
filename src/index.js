@@ -142,10 +142,8 @@ const run = () => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formUrl = formData.get('url');
-
     watchedState.form.processState = 'sending';
     const error = validate(watchedState.form.fields);
-
     if (error) {
       watchedState.form.valid = false;
       watchedState.form.error = error;
@@ -153,7 +151,6 @@ const run = () => {
     } else {
       watchedState.form.valid = true;
       watchedState.form.error = null;
-
       loadXml(watchedState, formUrl);
     }
   });
