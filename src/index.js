@@ -47,23 +47,10 @@ const collectPosts = (watchedState, xml, currentTime = null) => {
     }
   });
   watchedState.rssData.posts.push(...collectedPosts);
+  // console.log(watchedState.rssData.posts);
 };
 
-const encodeUrl = (url) => `https://api.allorigins.win/get?disableCache=true&url=${encodeURIComponent(url)}`;
-
-const reloadXml = (watchedState) => {
-  const urlList = watchedState.rssData.url;
-  Object.entries(urlList).forEach(([url, loadTime]) => {
-    const encodedUrl = encodeUrl(url);
-    axios(encodedUrl).then((response) => {
-      const xmlDoc = parseXml(response.data.contents);
-      collectPosts(watchedState, xmlDoc, loadTime);
-      watchedState.rssData.url[url] = Date.now();
-    }).catch(() => {
-      watchedState.form.processState = 'failed';
-    });
-  });
-};
+const encodeUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
 const loadXml = (watchedState, url) => {
   const encodedUrl = encodeUrl(url);
@@ -89,12 +76,15 @@ const loadXml = (watchedState, url) => {
 };
 
 const run = () => {
+  const refreshDelay = 5000;
   const defaultLanguage = 'en';
+
   i18next.init({
     lng: defaultLanguage,
     debug: false,
     resources,
   });
+
   const state = {
     currentLanguage: 'en',
     form: {
@@ -113,6 +103,7 @@ const run = () => {
       postsCountId: 0,
     },
   };
+
   const form = document.querySelector('form');
   const input = document.querySelector('input');
   const watchedState = initView(state);
@@ -154,7 +145,24 @@ const run = () => {
       loadXml(watchedState, formUrl);
     }
   });
-  setInterval(() => reloadXml(watchedState), 5000);
+
+  const timerId = setTimeout(function reloadXml() {
+    const urlList = watchedState.rssData.url;
+    if (urlList.length === 0) {
+      clearTimeout(timerId);
+    }
+    Object.entries(urlList).forEach(([url, loadTime]) => {
+      const encodedUrl2 = encodeUrl(url);
+      axios(encodedUrl2).then((response) => {
+        const xmlDoc = parseXml(response.data.contents);
+        collectPosts(watchedState, xmlDoc, loadTime);
+        watchedState.rssData.url[url] = Date.now();
+      }).catch(() => {
+        watchedState.form.processState = 'failed';
+      });
+    });
+    setTimeout(reloadXml, refreshDelay);
+  }, refreshDelay);
 };
 
 run();
