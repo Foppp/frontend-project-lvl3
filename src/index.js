@@ -20,6 +20,7 @@ const collectFeeds = (watchedState, xml) => {
   };
   watchedState.rssData.feeds.unshift(feed);
 };
+
 const collectPosts = (watchedState, xml, currentTime = null) => {
   const collectedPosts = [];
   const items = xml.querySelectorAll('channel > item');
@@ -47,7 +48,6 @@ const collectPosts = (watchedState, xml, currentTime = null) => {
     }
   });
   watchedState.rssData.posts.push(...collectedPosts);
-  // console.log(watchedState.rssData.posts);
 };
 
 const encodeUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
