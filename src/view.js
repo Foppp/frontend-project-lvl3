@@ -8,16 +8,22 @@ const feeds = document.querySelector('.feeds');
 const posts = document.querySelector('.posts');
 const form = document.querySelector('form');
 
+const readedPostId = [];
+
 const openModal = (content) => {
+  console.log(readedPostId);
   const modalTitle = document.querySelector('.modal-title');
   const modalBody = document.querySelector('.modal-body');
   const closeButton = document.querySelector('.btn-secondary');
   const readMoreButton = document.querySelector('.full-article');
+  const element = document.querySelector(`[data-id="${content.id}"]`);
   readMoreButton.setAttribute('href', content.link);
   modalTitle.textContent = content.title;
   modalBody.textContent = content.description;
   closeButton.textContent = i18next.t('buttons.modalWindow.close');
   readMoreButton.textContent = i18next.t('buttons.modalWindow.readMore');
+  element.classList.remove('font-weight-bold');
+  element.classList.add('font-weight-normal');
 };
 
 const renderFeeds = (feedsData) => {
@@ -54,7 +60,8 @@ const renderPosts = (postsData, state) => {
     li.setAttribute('class', 'list-group-item');
     li.classList.add('d-flex', 'justify-content-between', 'align-items-start');
     a.setAttribute('href', link);
-    a.setAttribute('class', 'font-weight-bold');
+    const font = !readedPostId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
+    a.setAttribute('class', font);
     a.setAttribute('data-id', id);
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener noreferrer');
@@ -78,8 +85,9 @@ const renderPosts = (postsData, state) => {
 
   modalOpenButtons.forEach((openBtn) => {
     openBtn.addEventListener('click', (e) => {
-      const targetId = e.target.dataset.id;
-      const [modalContent] = state.rssData.posts.filter((el) => el.id === Number(targetId));
+      const targetId = Number(e.target.dataset.id);
+      const [modalContent] = state.rssData.posts.filter((el) => el.id === targetId);
+      readedPostId.push(targetId);
       openModal(modalContent);
     });
   });
