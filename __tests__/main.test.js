@@ -2,9 +2,9 @@ import '@testing-library/jest-dom';
 import path from 'path';
 import nock from 'nock';
 import fs from 'fs';
-import { screen, waitFor } from '@testing-library/dom';
+import { screen } from '@testing-library/dom';
 import testingLibraryUserEvent from '@testing-library/user-event';
-import parseXml from '../src/parser.js';
+// import parseXml from '../src/parser.js';
 
 import run from '../src/index.js';
 
