@@ -72,7 +72,7 @@ const loadXml = (watchedState, url) => {
   });
 };
 
-const run = () => {
+export default () => {
   const refreshDelay = 5000;
   const defaultLanguage = 'en';
 
@@ -161,5 +161,3 @@ const run = () => {
     setTimeout(reloadXml, refreshDelay);
   }, refreshDelay);
 };
-
-run();
