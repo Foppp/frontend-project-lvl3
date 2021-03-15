@@ -2,6 +2,9 @@ develop:
 	npx webpack serve
 
 install:
+	npm install
+
+install-deps:
 	npm ci
 
 build:
