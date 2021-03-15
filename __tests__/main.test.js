@@ -54,6 +54,5 @@ test('working process', async () => {
     expect(screen.queryByText(i18next.t('errors.url'))).not.toBeInTheDocument();
     expect(screen.queryByText('Lorem ipsum')).toBeInTheDocument();
   });
-
   scope.done();
 });
