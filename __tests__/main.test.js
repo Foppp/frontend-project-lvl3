@@ -11,7 +11,7 @@ import run from '../src/index.js';
 
 const userEvent = testingLibraryUserEvent;
 
-nock.disableNetConnect();
+// nock.disableNetConnect();
 
 const pathToData = path.join('__tests__', '__fixtures__', 'rss.xml');
 const data = fs.readFileSync(pathToData, 'utf-8');
@@ -29,29 +29,24 @@ beforeEach(() => {
     submit: screen.getByRole('button', { selector: '[type="submit"]' }),
   };
 });
-
 test('working process', async () => {
   expect(elements.input).not.toHaveClass('is-invalid');
   expect(screen.queryByText(i18next.t('errors.url'))).not.toBeInTheDocument();
-
   await userEvent.type(elements.input, 'Hello');
   await userEvent.click(elements.submit);
-
-  expect(screen.queryByText(i18next.t('errors.url'))).toBeInTheDocument();
-  expect(elements.input).toHaveClass('is-invalid');
-
-  await userEvent.clear(elements.input);
-
+  await waitFor(() => {
+    expect(screen.queryByText(i18next.t('errors.url'))).toBeInTheDocument();
+    expect(elements.input).toHaveClass('is-invalid');
+  });
+  userEvent.clear(elements.input);
   nock('http://lorem-rss.herokuapp.com')
     .get('/feed')
     .reply(200, data);
-
   await userEvent.type(elements.input, 'http://lorem-rss.herokuapp.com/feed');
   await userEvent.click(elements.submit);
 
   await waitFor(() => {
-    // expect(elements.input).not.toHaveClass('is-invalid');
-    // expect(screen.queryByText(i18next.t('errors.url'))).not.toBeInTheDocument();
-    // expect(screen.queryByText('Lorem ipsum')).toBeInTheDocument();
+    expect(elements.input).not.toHaveClass('is-invalid');
+    expect(screen.queryByText(i18next.t('errors.url'))).not.toBeInTheDocument();
   });
 });
