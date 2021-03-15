@@ -47,7 +47,7 @@ const collectPosts = (watchedState, xml, currentTime = null) => {
   watchedState.rssData.posts.push(...collectedPosts);
 };
 
-const encodeUrl = (url) => `https://api.allorigins.win/get?disableCache=true&url=${encodeURIComponent(url)}`;
+const encodeUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
 
 const loadXml = (watchedState, url) => {
   const encodedUrl = encodeUrl(url);
