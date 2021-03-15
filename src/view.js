@@ -121,6 +121,7 @@ const initView = (state) => {
         throw new Error(`Uknown state ${processState}`);
     }
   };
+
   const renderError = (error) => {
     feedback.removeAttribute('class');
     feedback.classList.add('feedback', 'text-danger');
