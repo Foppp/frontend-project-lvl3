@@ -1,3 +1,4 @@
+/* eslint-disable object-curly-newline */
 /* eslint-disable no-param-reassign */
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -10,10 +11,9 @@ import initView from './view.js';
 const normalizeFeedsData = (watchedState, xml) => {
   const feedTitle = xml.querySelector('channel > title');
   const feedDescription = xml.querySelector('channel > description');
-  const feed = {
-    title: feedTitle.textContent,
-    description: feedDescription.textContent,
-  };
+  const title = feedTitle.textContent;
+  const description = feedDescription.textContent;
+  const feed = { title, description };
   watchedState.rssData.feeds.unshift(feed);
 };
 
@@ -26,17 +26,14 @@ const normalizePostsData = (watchedState, xml, currentTime = null) => {
     const postTitle = item.querySelector('title');
     const postDescription = item.querySelector('description');
     const postLink = item.querySelector('link');
-    const date = item.querySelector('pubDate');
-    const publishTime = date.textContent;
-    const post = {
-      id,
-      date: publishTime,
-      title: postTitle.textContent,
-      description: postDescription.textContent,
-      link: postLink.textContent,
-    };
+    const pubDate = item.querySelector('pubDate');
+    const date = pubDate.textContent;
+    const title = postTitle.textContent;
+    const description = postDescription.textContent;
+    const link = postLink.textContent;
+    const post = { id, date, title, description, link };
     if (currentTime) {
-      if (Date.parse(publishTime) > currentTime) {
+      if (Date.parse(date) > currentTime) {
         collectedPosts.unshift(post);
       }
     } else {
