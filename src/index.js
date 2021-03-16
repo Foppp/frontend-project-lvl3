@@ -5,10 +5,9 @@ import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
 import resources from './locales';
-import parseXml from './parser.js';
 import initView from './view.js';
 
-const collectFeeds = (watchedState, xml) => {
+const normalizeFeedsData = (watchedState, xml) => {
   const feedTitle = xml.querySelector('channel > title');
   const feedDescription = xml.querySelector('channel > description');
   const feed = {
@@ -18,7 +17,7 @@ const collectFeeds = (watchedState, xml) => {
   watchedState.rssData.feeds.unshift(feed);
 };
 
-const collectPosts = (watchedState, xml, currentTime = null) => {
+const normalizePostsData = (watchedState, xml, currentTime = null) => {
   const collectedPosts = [];
   const items = xml.querySelectorAll('channel > item');
   items.forEach((item) => {
@@ -47,12 +46,24 @@ const collectPosts = (watchedState, xml, currentTime = null) => {
   watchedState.rssData.posts.push(...collectedPosts);
 };
 
-const encodeUrl = (url) => `https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(url)}`;
+const encodeUrl = (url) => {
+  const hook = 'https://hexlet-allorigins.herokuapp.com/get';
+  const queryParams = `disableCache=true&url=${encodeURIComponent(url)}`;
+  return `${hook}?${queryParams}`;
+};
+
+const parseXml = (data) => {
+  const parser = new DOMParser();
+  return parser.parseFromString(data, 'application/xml');
+};
+
+const request = (url) => axios.get(url)
+  .then((response) => response.data.contents);
 
 const loadXml = (watchedState, url) => {
   const encodedUrl = encodeUrl(url);
-  axios(encodedUrl).then((response) => {
-    const xmlDoc = parseXml(response.data.contents);
+  request(encodedUrl).then((data) => {
+    const xmlDoc = parseXml(data);
     const parsererror = xmlDoc.querySelector('parsererror');
     if (parsererror) {
       throw new Error(i18next.t('errors.xml'));
@@ -60,8 +71,8 @@ const loadXml = (watchedState, url) => {
     watchedState.form.processError = null;
     watchedState.form.processState = 'finished';
     watchedState.rssData.url[url] = Date.now();
-    collectFeeds(watchedState, xmlDoc);
-    collectPosts(watchedState, xmlDoc);
+    normalizeFeedsData(watchedState, xmlDoc);
+    normalizePostsData(watchedState, xmlDoc);
   }).catch((err) => {
     if (err.request) {
       watchedState.form.processError = i18next.t('errors.network');
@@ -150,9 +161,9 @@ export default () => {
     }
     Object.entries(urlList).forEach(([url, loadTime]) => {
       const encodedUrl2 = encodeUrl(url);
-      axios(encodedUrl2).then((response) => {
-        const xmlDoc = parseXml(response.data.contents);
-        collectPosts(watchedState, xmlDoc, loadTime);
+      request(encodedUrl2).then((data) => {
+        const xmlDoc = parseXml(data);
+        normalizePostsData(watchedState, xmlDoc, loadTime);
         watchedState.rssData.url[url] = Date.now();
       }).catch(() => {
         watchedState.form.processState = 'failed';

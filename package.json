@@ -6,10 +6,6 @@
   "scripts": {
     "test": "jest --colors"
   },
-  "jest": {
-    "verbose": true,
-    "testURL": "http://localhost/"
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Foppp/frontend-project-lvl3.git"

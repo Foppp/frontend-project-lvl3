@@ -48,7 +48,7 @@ const initView = (state) => {
     feeds.appendChild(ul);
   };
 
-  const renderPosts = (postsData, state) => {
+  const renderPosts = (postsData) => {
     const h2 = document.createElement('h2');
     const ul = document.createElement('ul');
     ul.setAttribute('class', 'list-group');
