@@ -54,12 +54,12 @@ const parseXml = (data) => {
   return parser.parseFromString(data, 'application/xml');
 };
 
-const request = (url) => axios.get(url)
+const requestData = (url) => axios.get(url)
   .then((response) => response.data.contents);
 
 const loadXml = (watchedState, url) => {
   const encodedUrl = encodeUrl(url);
-  request(encodedUrl).then((data) => {
+  requestData(encodedUrl).then((data) => {
     const xmlDoc = parseXml(data);
     const parsererror = xmlDoc.querySelector('parsererror');
     if (parsererror) {
@@ -111,6 +111,7 @@ export default () => {
 
   const form = document.querySelector('form');
   const input = document.querySelector('input');
+
   const watchedState = initView(state);
 
   const validate = (value) => {
@@ -157,8 +158,8 @@ export default () => {
       clearTimeout(timerId);
     }
     Object.entries(urlList).forEach(([url, loadTime]) => {
-      const encodedUrl2 = encodeUrl(url);
-      request(encodedUrl2).then((data) => {
+      const encodedUrl = encodeUrl(url);
+      requestData(encodedUrl).then((data) => {
         const xmlDoc = parseXml(data);
         normalizePostsData(watchedState, xmlDoc, loadTime);
         watchedState.rssData.url[url] = Date.now();

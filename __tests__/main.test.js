@@ -24,7 +24,7 @@ beforeEach(() => {
 
 test('working process', async () => {
   expect(elements.submit).not.toBeDisabled();
-  userEvent.type(elements.input, 'Hello');
+  userEvent.type(elements.input, 'wrong-url');
   userEvent.click(elements.submit);
   expect(elements.input).toHaveClass('is-invalid');
   expect(screen.queryByText(i18next.t('errors.url'))).toBeInTheDocument();
@@ -37,9 +37,8 @@ test('working process', async () => {
 
   await waitFor(() => {
     expect(elements.submit).not.toBeDisabled();
-    expect(screen.queryByText('text-success')).not.toBeInTheDocument();
+    expect(screen.queryByText(i18next.t('loadSuccess'))).toBeInTheDocument();
     const posts = screen.getAllByRole('listitem');
     expect(posts).toHaveLength(11);
   });
-  userEvent.clear(elements.input);
 });
