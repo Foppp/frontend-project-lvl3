@@ -50,8 +50,7 @@ const renderPosts = (postsData, state, elements) => {
     const listItem = document.createElement('li');
     const linkElement = document.createElement('a');
     const previewButton = document.createElement('button');
-    listItem.setAttribute('class', 'list-group-item');
-    listItem.classList.add('d-flex', 'justify-content-between', 'align-items-start');
+    listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     linkElement.setAttribute('href', link);
     const font = !readedPostId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
     linkElement.setAttribute('class', font);
@@ -60,8 +59,7 @@ const renderPosts = (postsData, state, elements) => {
     linkElement.setAttribute('rel', 'noopener noreferrer');
     linkElement.textContent = title;
     previewButton.setAttribute('type', 'button');
-    previewButton.setAttribute('class', 'btn');
-    previewButton.classList.add('btn-primary', 'btn-sm');
+    previewButton.classList.add('btn', 'btn-primary', 'btn-sm');
     previewButton.setAttribute('data-id', id);
     previewButton.setAttribute('data-toggle', 'modal');
     previewButton.setAttribute('data-target', '#modal');
@@ -90,19 +88,15 @@ const processStateHandler = (processState, elements) => {
   switch (processState) {
     case 'filling':
       elements.submitButton.disabled = false;
-      elements.input.disabled = false;
       break;
     case 'sending':
       elements.submitButton.disabled = true;
-      elements.input.disabled = true;
       break;
     case 'failed':
       elements.submitButton.disabled = false;
-      elements.input.disabled = false;
       break;
     case 'finished':
       elements.submitButton.disabled = false;
-      elements.input.disabled = false;
       elements.feedback.removeAttribute('class');
       elements.feedback.classList.add('feedback', 'text-success');
       elements.input.classList.remove('is-invalid');
