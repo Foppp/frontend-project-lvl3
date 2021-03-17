@@ -27,59 +27,59 @@ const initView = (state) => {
   };
 
   const renderFeeds = (feedsData) => {
-    const h2 = document.createElement('h2');
-    const ul = document.createElement('ul');
-    ul.setAttribute('class', 'list-group');
-    ul.classList.add('mb-5');
-    h2.textContent = i18next.t('feeds');
-    feedsData.forEach(({ title, description }) => {
-      const li = document.createElement('li');
-      li.setAttribute('class', 'list-group-item');
-      const h3 = document.createElement('h3');
-      const p = document.createElement('p');
-      h3.textContent = title;
-      p.textContent = description;
-      li.appendChild(h3);
-      li.appendChild(p);
-      ul.appendChild(li);
+    const mainFeedsTitle = document.createElement('h2');
+    const feedsGroup = document.createElement('ul');
+    feedsGroup.setAttribute('class', 'list-group');
+    feedsGroup.classList.add('mb-5');
+    mainFeedsTitle.textContent = i18next.t('feeds');
+    feedsData.forEach(({ feedName, feedDescription }) => {
+      const listItem = document.createElement('li');
+      listItem.setAttribute('class', 'list-group-item');
+      const title = document.createElement('h3');
+      const description = document.createElement('p');
+      title.textContent = feedName;
+      description.textContent = feedDescription;
+      listItem.appendChild(title);
+      listItem.appendChild(description);
+      feedsGroup.appendChild(listItem);
     });
     feeds.innerHTML = '';
-    feeds.appendChild(h2);
-    feeds.appendChild(ul);
+    feeds.appendChild(mainFeedsTitle);
+    feeds.appendChild(feedsGroup);
   };
 
   const renderPosts = (postsData) => {
-    const h2 = document.createElement('h2');
-    const ul = document.createElement('ul');
-    ul.setAttribute('class', 'list-group');
-    h2.textContent = i18next.t('posts');
+    const mainPostsTitle = document.createElement('h2');
+    const listGroup = document.createElement('ul');
+    listGroup.setAttribute('class', 'list-group');
+    mainPostsTitle.textContent = i18next.t('posts');
     postsData.forEach(({ id, title, link }) => {
-      const li = document.createElement('li');
-      const a = document.createElement('a');
-      const button = document.createElement('button');
-      li.setAttribute('class', 'list-group-item');
-      li.classList.add('d-flex', 'justify-content-between', 'align-items-start');
-      a.setAttribute('href', link);
+      const listItem = document.createElement('li');
+      const linkElement = document.createElement('a');
+      const previewButton = document.createElement('button');
+      listItem.setAttribute('class', 'list-group-item');
+      listItem.classList.add('d-flex', 'justify-content-between', 'align-items-start');
+      linkElement.setAttribute('href', link);
       const font = !readedPostId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
-      a.setAttribute('class', font);
-      a.setAttribute('data-id', id);
-      a.setAttribute('target', '_blank');
-      a.setAttribute('rel', 'noopener noreferrer');
-      a.textContent = title;
-      button.setAttribute('type', 'button');
-      button.setAttribute('class', 'btn');
-      button.classList.add('btn-primary', 'btn-sm');
-      button.setAttribute('data-id', id);
-      button.setAttribute('data-toggle', 'modal');
-      button.setAttribute('data-target', '#modal');
-      button.textContent = i18next.t('buttons.preview');
-      li.appendChild(a);
-      li.appendChild(button);
-      ul.prepend(li);
+      linkElement.setAttribute('class', font);
+      linkElement.setAttribute('data-id', id);
+      linkElement.setAttribute('target', '_blank');
+      linkElement.setAttribute('rel', 'noopener noreferrer');
+      linkElement.textContent = title;
+      previewButton.setAttribute('type', 'button');
+      previewButton.setAttribute('class', 'btn');
+      previewButton.classList.add('btn-primary', 'btn-sm');
+      previewButton.setAttribute('data-id', id);
+      previewButton.setAttribute('data-toggle', 'modal');
+      previewButton.setAttribute('data-target', '#modal');
+      previewButton.textContent = i18next.t('buttons.preview');
+      listItem.appendChild(linkElement);
+      listItem.appendChild(previewButton);
+      listGroup.prepend(listItem);
     });
     posts.innerHTML = '';
-    posts.appendChild(h2);
-    posts.appendChild(ul);
+    posts.appendChild(mainPostsTitle);
+    posts.appendChild(listGroup);
 
     const modalOpenButtons = document.querySelectorAll('[data-toggle="modal"]');
 

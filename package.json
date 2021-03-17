@@ -24,6 +24,7 @@
   "homepage": "https://github.com/Foppp/frontend-project-lvl3#readme",
   "devDependencies": {
     "@babel/core": "^7.13.8",
+    "@babel/plugin-proposal-pipeline-operator": "^7.12.13",
     "@babel/preset-env": "^7.13.9",
     "@testing-library/dom": "^7.30.0",
     "@testing-library/jest-dom": "^5.11.9",
@@ -52,7 +53,6 @@
     "bootstrap": "^4.6.0",
     "i18next": "^19.9.2",
     "jquery": "^3.6.0",
-    "lodash": "^4.17.21",
     "on-change": "^2.2.3",
     "popper.js": "^1.16.1",
     "yup": "^0.32.9"
