@@ -91,10 +91,16 @@ export default () => {
     },
   };
 
-  const form = document.querySelector('form');
-  const input = document.querySelector('input');
+  const elements = {
+    submitButton: document.querySelector('[aria-label="add"]'),
+    input: document.querySelector('[aria-label="url"]'),
+    feedback: document.querySelector('.feedback'),
+    form: document.querySelector('form'),
+    feeds: document.querySelector('.feeds'),
+    posts: document.querySelector('.posts'),
+  };
 
-  const watchedState = initView(state);
+  const watchedState = initView(state, elements);
 
   const validate = (value) => {
     const schema = yup.object().shape({
@@ -111,13 +117,13 @@ export default () => {
     }
   };
 
-  input.addEventListener('input', (e) => {
+  elements.input.addEventListener('input', (e) => {
     const inputData = e.target.value;
     watchedState.form.processState = 'filling';
     watchedState.form.fields.url = inputData;
   });
 
-  form.addEventListener('submit', (e) => {
+  elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formUrl = formData.get('url');
