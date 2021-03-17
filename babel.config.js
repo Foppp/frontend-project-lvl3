@@ -12,7 +12,7 @@ module.exports = {
     [
       '@babel/plugin-proposal-pipeline-operator',
       {
-        proposal: 'minimal',
+        proposal: 'smart',
       },
     ],
   ],
