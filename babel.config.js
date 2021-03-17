@@ -1,6 +1,7 @@
 module.exports = {
   presets: [
-    ['@babel/preset-env',
+    [
+      '@babel/preset-env',
       {
         targets: {
           node: 'current',
@@ -9,11 +10,6 @@ module.exports = {
     ],
   ],
   plugins: [
-    [
-      '@babel/plugin-proposal-pipeline-operator',
-      {
-        proposal: 'smart',
-      },
-    ],
+    ['@babel/plugin-proposal-pipeline-operator', { proposal: 'minimal' }],
   ],
 };
