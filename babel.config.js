@@ -15,6 +15,5 @@ module.exports = {
         proposal: 'minimal',
       },
     ],
-    ['@babel/plugin-syntax-pipeline-operator'],
   ],
 };
