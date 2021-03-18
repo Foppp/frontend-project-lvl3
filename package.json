@@ -4,7 +4,7 @@
   "description": "RSS Feed",
   "main": "./index.js",
   "scripts": {
-    "test": "npx -n --experimental-vm-modules jest"
+    "test": "npx -n --experimental-vm-modules -n --no-warnings jest --colors"
   },
   "repository": {
     "type": "git",
