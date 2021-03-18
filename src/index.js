@@ -1,9 +1,9 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-param-reassign */
-import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import * as yup from 'yup';
 import axios from 'axios';
+import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import i18next from 'i18next';
 import resources from './locales';
 import initView from './view.js';
@@ -29,12 +29,11 @@ const getNewPosts = (posts, lastUpdate) => posts
   .filter((post) => Date.parse(post.date) > lastUpdate);
 
 const loadData = (watchedState, url) => {
-  // const requestedData = url |> encodeUrl |> requestData;
   requestData(encodeUrl(url)).then((response) => {
     const { feedName, feedDescription, posts } = parseXml(response);
-    const updatedId = generateId(watchedState, posts);
+    const updatedPostsId = generateId(watchedState, posts);
     watchedState.rssData.feeds.unshift({ feedName, feedDescription });
-    watchedState.rssData.posts.push(...updatedId);
+    watchedState.rssData.posts.push(...updatedPostsId);
     watchedState.form.processError = null;
     watchedState.form.processState = 'finished';
     watchedState.rssData.url[url] = Date.now();
@@ -57,10 +56,9 @@ const refreshData = (watchedState) => {
       const updatedId = generateId(watchedState, newPosts);
       watchedState.rssData.posts.push(...updatedId);
       watchedState.rssData.url[url] = Date.now();
-    })
-      .catch(() => {
-        watchedState.form.processState = 'failed';
-      });
+    }).catch(() => {
+      watchedState.form.processState = 'failed';
+    });
   });
 };
 
