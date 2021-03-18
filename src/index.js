@@ -16,7 +16,6 @@ const encodeUrl = (url) => {
   const queryParams = `?disableCache=true&url=${encodeURIComponent(url)}`;
   return `${corsProxyUrl}${queryParams}`;
 };
-
 const requestData = (url) => axios.get(url)
   .then((response) => response.data.contents);
 
