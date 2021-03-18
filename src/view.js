@@ -8,7 +8,6 @@ const setAttributes = (element, values) => Object.keys(values)
   .forEach((attribute) => {
     element.setAttribute(attribute, values[attribute]);
   });
-
 const openModal = (content) => {
   const modalTitle = document.querySelector('.modal-title');
   const modalBody = document.querySelector('.modal-body');
