@@ -7,6 +7,7 @@ import i18next from 'i18next';
 import resources from './locales';
 import initView from './view.js';
 import parseXml from './parser.js';
+import './scss/style.scss';
 
 const refreshDelay = 5000;
 
@@ -110,7 +111,6 @@ export default () => {
       return e.message;
     }
   };
-
   elements.input.addEventListener('input', (e) => {
     const inputData = e.target.value;
     watchedState.form.processState = 'filling';
