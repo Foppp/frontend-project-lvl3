@@ -1,6 +1,6 @@
 module.exports = {
   moduleNameMapper: {
-    '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
+    '\\.(css|scss)$': '<rootDir>/__mocks__/styleMock.js',
   },
   testEnvironment: 'jsdom',
 };
