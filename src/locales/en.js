@@ -1,9 +1,5 @@
 export default {
   translation: {
-    languages: {
-      en: 'English',
-      ru: 'Русский',
-    },
     buttons: {
       submit: 'Add',
       preview: 'Preview',
