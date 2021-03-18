@@ -2,10 +2,9 @@
 /* eslint-disable no-param-reassign */
 import * as yup from 'yup';
 import axios from 'axios';
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import './style.css';
-import 'bootstrap/dist/css/bootstrap.css';
 import i18next from 'i18next';
 import resources from './locales';
 import initView from './view.js';
