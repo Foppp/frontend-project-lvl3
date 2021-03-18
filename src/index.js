@@ -3,7 +3,6 @@
 import * as yup from 'yup';
 import axios from 'axios';
 import 'bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import './style.css';
 import i18next from 'i18next';
 import resources from './locales';
