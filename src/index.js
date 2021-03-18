@@ -1,7 +1,7 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-param-reassign */
-import './style.css';
-import 'bootstrap';
+// import './style.css';
+// import 'bootstrap';
 // import 'bootstrap/dist/css/bootstrap.min.css';
 import * as yup from 'yup';
 import axios from 'axios';
