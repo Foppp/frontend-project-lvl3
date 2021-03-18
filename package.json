@@ -24,7 +24,6 @@
   "homepage": "https://github.com/Foppp/frontend-project-lvl3#readme",
   "devDependencies": {
     "@babel/core": "^7.13.8",
-    "@babel/plugin-proposal-pipeline-operator": "^7.12.13",
     "@babel/preset-env": "^7.13.9",
     "@testing-library/dom": "^7.30.0",
     "@testing-library/jest-dom": "^5.11.9",
