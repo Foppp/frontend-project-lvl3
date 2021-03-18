@@ -2,12 +2,12 @@
 /* eslint-disable no-param-reassign */
 import * as yup from 'yup';
 import axios from 'axios';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap';
 import i18next from 'i18next';
 import resources from './locales';
 import initView from './view.js';
 import parseXml from './parser.js';
+import './style.scss';
 
 const refreshDelay = 5000;
 
