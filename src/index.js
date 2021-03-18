@@ -10,7 +10,6 @@ import initView from './view.js';
 import parseXml from './parser.js';
 
 const refreshDelay = 5000;
-const defaultLanguage = 'en';
 
 const encodeUrl = (url) => {
   const corsProxyUrl = 'https://hexlet-allorigins.herokuapp.com/get';
@@ -29,26 +28,9 @@ const generateId = (watchedState, posts) => {
 const getNewPosts = (posts, lastUpdate) => posts
   .filter((post) => Date.parse(post.date) > lastUpdate);
 
-const refreshData = (watchedState) => {
-  const urlList = watchedState.rssData.url;
-  Object.entries(urlList).forEach(([url, lastUpdate]) => {
-    const requestedData = url |> encodeUrl |> requestData;
-    requestedData.then((response) => {
-      const { posts } = parseXml(response);
-      const newPosts = getNewPosts(posts, lastUpdate);
-      const updatedId = generateId(watchedState, newPosts);
-      watchedState.rssData.posts.push(...updatedId);
-      watchedState.rssData.url[url] = Date.now();
-    })
-      .catch(() => {
-        watchedState.form.processState = 'failed';
-      });
-  });
-};
-
 const loadData = (watchedState, url) => {
-  const requestedData = url |> encodeUrl |> requestData;
-  requestedData.then((response) => {
+  // const requestedData = url |> encodeUrl |> requestData;
+  requestData(encodeUrl(url)).then((response) => {
     const { feedName, feedDescription, posts } = parseXml(response);
     const updatedId = generateId(watchedState, posts);
     watchedState.rssData.feeds.unshift({ feedName, feedDescription });
@@ -66,15 +48,30 @@ const loadData = (watchedState, url) => {
   });
 };
 
+const refreshData = (watchedState) => {
+  const urlList = watchedState.rssData.url;
+  Object.entries(urlList).forEach(([url, lastUpdate]) => {
+    requestData(encodeUrl(url)).then((response) => {
+      const { posts } = parseXml(response);
+      const newPosts = getNewPosts(posts, lastUpdate);
+      const updatedId = generateId(watchedState, newPosts);
+      watchedState.rssData.posts.push(...updatedId);
+      watchedState.rssData.url[url] = Date.now();
+    })
+      .catch(() => {
+        watchedState.form.processState = 'failed';
+      });
+  });
+};
+
 export default () => {
   i18next.init({
-    lng: defaultLanguage,
+    lng: 'en',
     debug: false,
     resources,
   });
 
   const state = {
-    currentLanguage: 'en',
     form: {
       processState: 'filling',
       processError: null,

@@ -4,6 +4,11 @@ import i18next from 'i18next';
 
 const readedPostId = [];
 
+const setAttributes = (element, values) => Object.keys(values)
+  .forEach((attribute) => {
+    element.setAttribute(attribute, values[attribute]);
+  });
+
 const openModal = (content) => {
   const modalTitle = document.querySelector('.modal-title');
   const modalBody = document.querySelector('.modal-body');
@@ -51,18 +56,17 @@ const renderPosts = (postsData, state, elements) => {
     const linkElement = document.createElement('a');
     const previewButton = document.createElement('button');
     listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
-    linkElement.setAttribute('href', link);
-    const font = !readedPostId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
-    linkElement.setAttribute('class', font);
-    linkElement.setAttribute('data-id', id);
-    linkElement.setAttribute('target', '_blank');
-    linkElement.setAttribute('rel', 'noopener noreferrer');
-    linkElement.textContent = title;
-    previewButton.setAttribute('type', 'button');
     previewButton.classList.add('btn', 'btn-primary', 'btn-sm');
-    previewButton.setAttribute('data-id', id);
-    previewButton.setAttribute('data-toggle', 'modal');
-    previewButton.setAttribute('data-target', '#modal');
+    const font = !readedPostId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
+    const linkAttributes = {
+      href: link, class: font, 'data-id': id, target: '_blank', rel: 'noopener noreferrer',
+    };
+    const buttonAttributes = {
+      type: 'button', 'data-id': id, 'data-toggle': 'modal', 'data-target': '#modal',
+    };
+    setAttributes(linkElement, linkAttributes);
+    setAttributes(previewButton, buttonAttributes);
+    linkElement.textContent = title;
     previewButton.textContent = i18next.t('buttons.preview');
     listItem.appendChild(linkElement);
     listItem.appendChild(previewButton);
