@@ -1,5 +1,6 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-param-reassign */
+import './style.css';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import * as yup from 'yup';
@@ -8,7 +9,6 @@ import i18next from 'i18next';
 import resources from './locales';
 import initView from './view.js';
 import parseXml from './parser.js';
-import './style.css';
 
 const refreshDelay = 5000;
 
