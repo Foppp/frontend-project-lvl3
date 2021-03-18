@@ -128,6 +128,7 @@ const initView = (state, elements) => {
     'rssData.feeds': (value) => renderFeeds(value, elements),
     'rssData.posts': (value) => renderPosts(value, state, elements),
   };
+
   const watchedState = onChange(state, (path, value) => {
     if (mapping[path]) {
       mapping[path](value);
