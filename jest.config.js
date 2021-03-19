@@ -3,6 +3,6 @@ module.exports = {
     '\\.(css|less)$': '<rootDir>/__mocks__/styleMock.js',
   },
   testEnvironment: 'jsdom',
-  // verbose: true,
-  // testURL: 'http://localhost/',
+  verbose: true,
+  testURL: 'http://localhost/',
 };
