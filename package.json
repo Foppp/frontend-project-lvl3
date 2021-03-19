@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "RSS Feed",
   "scripts": {
-    "test": "jest --colors"
+    "test": "npx -n --experimental-vm-modules jest"
   },
   "repository": {
     "type": "git",

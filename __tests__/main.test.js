@@ -4,7 +4,7 @@ import fs from 'fs';
 import { screen, waitFor } from '@testing-library/dom';
 import testingLibraryUserEvent from '@testing-library/user-event';
 import i18next from 'i18next';
-import run from '../src/index.js';
+import run from '../src/app.js';
 
 const userEvent = testingLibraryUserEvent;
 
