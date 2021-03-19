@@ -3,6 +3,8 @@
 // import './style.css';
 // import 'bootstrap';
 // import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/js/dist/modal';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
