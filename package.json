@@ -2,6 +2,7 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "RSS Feed",
+  "main": "./src/app.js",
   "scripts": {
     "test": "npx -n --experimental-vm-modules jest"
   },
