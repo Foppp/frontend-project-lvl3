@@ -1,16 +1,12 @@
 export default {
   translation: {
     buttons: {
-      submit: 'Add',
       preview: 'Preview',
       modalWindow: {
         close: 'Close',
         readMore: 'Read More',
       },
     },
-    mainTitle: 'RSS Aggregator',
-    subTitle: 'Start read RSS today! It is easy!',
-    example: 'Example',
     feeds: 'Feeds',
     posts: 'Posts',
     errors: {

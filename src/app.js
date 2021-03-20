@@ -64,7 +64,7 @@ const refreshData = (watchedState) => {
 
 export default () => {
   i18next.init({
-    lng: 'en',
+    lng: 'ru',
     debug: false,
     resources,
   });
