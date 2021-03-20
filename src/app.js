@@ -122,7 +122,8 @@ export default sum;
 //       url: yup
 //         .string()
 //         .url(i18next.t('errors.url'))
-//         .test('doubleUrl', i18next.t('errors.doubleUrl'), (val) => !watchedState.rssData.url[val]),
+//         .test('doubleUrl', i18next.t('errors.doubleUrl'),
+// (val) => !watchedState.rssData.url[val]),
 //     });
 //     try {
 //       schema.validateSync(value);

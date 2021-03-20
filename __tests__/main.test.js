@@ -4,8 +4,11 @@
 // import { screen, waitFor } from '@testing-library/dom';
 // import testingLibraryUserEvent from '@testing-library/user-event';
 // import i18next from 'i18next';
-// import run from '../src/index.js';
+import run from '../src/app.js';
 
+test('sum', () => {
+  expect(run(3, 3)).toBe(6);
+});
 // const userEvent = testingLibraryUserEvent;
 
 // let elements;
@@ -20,25 +23,4 @@
 //     input: screen.getByRole('textbox'),
 //     submit: screen.getByRole('button', { selector: '[type="submit"]' }),
 //   };
-// });
-
-// test('working process', async () => {
-//   expect(elements.submit).not.toBeDisabled();
-//   userEvent.type(elements.input, 'wrong-url');
-//   userEvent.click(elements.submit);
-//   expect(elements.input).toHaveClass('is-invalid');
-//   expect(screen.queryByText(i18next.t('errors.url'))).toBeInTheDocument();
-
-//   userEvent.clear(elements.input);
-
-//   userEvent.type(elements.input, 'http://lorem-rss.herokuapp.com/feed');
-//   userEvent.click(elements.submit);
-//   expect(elements.submit).toBeDisabled();
-
-//   await waitFor(() => {
-//     expect(elements.submit).not.toBeDisabled();
-//     expect(screen.queryByText(i18next.t('loadSuccess'))).toBeInTheDocument();
-//     const posts = screen.getAllByRole('listitem');
-//     expect(posts).toHaveLength(11);
-//   });
 // });
