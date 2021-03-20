@@ -1,5 +1,7 @@
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-param-reassign */
+import 'bootstrap';
+
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
