@@ -91,15 +91,19 @@ const processStateHandler = (processState, elements) => {
   switch (processState) {
     case 'filling':
       elements.submitButton.disabled = false;
+      elements.input.disabled = false;
       break;
     case 'sending':
       elements.submitButton.disabled = true;
+      elements.input.disabled = true;
       break;
     case 'failed':
       elements.submitButton.disabled = false;
+      elements.input.disabled = false;
       break;
     case 'finished':
       elements.submitButton.disabled = false;
+      elements.input.disabled = false;
       elements.feedback.removeAttribute('class');
       elements.feedback.classList.add('feedback', 'text-success');
       elements.input.classList.remove('is-invalid');
