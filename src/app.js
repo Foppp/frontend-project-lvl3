@@ -111,6 +111,7 @@ export default () => {
       return e.message;
     }
   };
+
   elements.input.addEventListener('input', (e) => {
     const inputData = e.target.value;
     watchedState.form.processState = 'filling';
