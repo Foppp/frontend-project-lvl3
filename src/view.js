@@ -25,7 +25,6 @@ const initView = (state) => {
     element.classList.remove('font-weight-bold');
     element.classList.add('font-weight-normal');
   };
-
   const renderFeeds = (feedsData) => {
     const h2 = document.createElement('h2');
     const ul = document.createElement('ul');
