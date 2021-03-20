@@ -1,6 +1,5 @@
-const sum = (a, b) => a + b;
+export default (a, b) => a + b;
 
-export default sum;
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-param-reassign */
 // import 'bootstrap';
