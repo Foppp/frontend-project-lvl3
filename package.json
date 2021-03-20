@@ -2,9 +2,12 @@
   "name": "@hexlet/code",
   "version": "1.0.0",
   "description": "RSS Feed",
-  "main": "./index.js",
   "scripts": {
     "test": "jest --colors"
+  },
+  "jest": {
+    "verbose": true,
+    "testURL": "http://localhost/"
   },
   "repository": {
     "type": "git",
