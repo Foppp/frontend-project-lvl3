@@ -9,7 +9,7 @@
 make install
 ```
 
-#### Develop ####
+#### Run ####
 ```
 make develop
 ```
