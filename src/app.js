@@ -1,3 +1,5 @@
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 export default () => 10 + 10;
 
 /* eslint-disable object-curly-newline */
