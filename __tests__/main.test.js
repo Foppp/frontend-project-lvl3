@@ -7,7 +7,7 @@
 import run from '../src/app.js';
 
 test('sum', () => {
-  expect(run(3, 3)).toBe(6);
+  expect(run()).toBe(20);
 });
 // const userEvent = testingLibraryUserEvent;
 

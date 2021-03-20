@@ -1,4 +1,4 @@
-export default (a, b) => a + b;
+export default () => 10 + 10;
 
 /* eslint-disable object-curly-newline */
 /* eslint-disable no-param-reassign */
