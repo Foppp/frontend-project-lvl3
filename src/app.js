@@ -1,4 +1,3 @@
-/* eslint-disable object-curly-newline */
 /* eslint-disable no-param-reassign */
 import 'bootstrap';
 
@@ -11,10 +10,9 @@ import parseXml from './parser.js';
 
 const refreshDelay = 5000;
 
-const encodeUrl = (url) => {
-  const corsProxyUrl = 'https://hexlet-allorigins.herokuapp.com/get';
-  const queryParams = `?disableCache=true&url=${encodeURIComponent(url)}`;
-  return `${corsProxyUrl}${queryParams}`;
+const getProxyUrl = (url) => {
+  const corsProxyUrl = new URL('https://hexlet-allorigins.herokuapp.com/get');
+  return new URL(`?disableCache=true&url=${encodeURIComponent(url)}`, corsProxyUrl);
 };
 
 const requestData = (url) => axios.get(url)
@@ -29,7 +27,7 @@ const getNewPosts = (posts, lastUpdate) => posts
   .filter((post) => Date.parse(post.date) > lastUpdate);
 
 const loadData = (watchedState, url) => {
-  requestData(encodeUrl(url)).then((response) => {
+  requestData(getProxyUrl(url)).then((response) => {
     const { feedName, feedDescription, posts } = parseXml(response);
     const updatedPostsId = generateId(watchedState, posts);
     watchedState.rssData.feeds.unshift({ feedName, feedDescription });
@@ -50,7 +48,7 @@ const loadData = (watchedState, url) => {
 const refreshData = (watchedState) => {
   const urlList = watchedState.rssData.url;
   Object.entries(urlList).forEach(([url, lastUpdate]) => {
-    requestData(encodeUrl(url)).then((response) => {
+    requestData(getProxyUrl(url)).then((response) => {
       const { posts } = parseXml(response);
       const newPosts = getNewPosts(posts, lastUpdate);
       const updatedId = generateId(watchedState, newPosts);
