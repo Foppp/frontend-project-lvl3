@@ -12,7 +12,11 @@ const refreshDelay = 5000;
 
 const getProxyUrl = (url) => {
   const corsProxyUrl = new URL('https://hexlet-allorigins.herokuapp.com/get');
-  return new URL(`?disableCache=true&url=${encodeURIComponent(url)}`, corsProxyUrl);
+  const params = new URLSearchParams(corsProxyUrl.search);
+  params.set('disableCache', true);
+  params.set('url', encodeURIComponent(url));
+  // const newUrl = new URL(`?disableCache=true&url=${encodeURIComponent(url)}`, corsProxyUrl);
+  return corsProxyUrl.toString();
 };
 
 const requestData = (url) => axios.get(url)
