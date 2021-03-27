@@ -2,21 +2,21 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 
-const readedPostId = [];
+// const readedPostId = [];
 
 const setAttributes = (element, values) => Object.keys(values)
   .forEach((attribute) => {
     element.setAttribute(attribute, values[attribute]);
   });
-const openModal = (content) => {
-  const modalTitle = document.querySelector('.modal-title');
-  const modalBody = document.querySelector('.modal-body');
+const openModal = (content, elements) => {
+  // const modalTitle = document.querySelector('.modal-title');
+  // const modalBody = document.querySelector('.modal-body');
   const closeButton = document.querySelector('.btn-secondary');
   const readMoreButton = document.querySelector('.full-article');
   const element = document.querySelector(`[data-id="${content.id}"]`);
   readMoreButton.setAttribute('href', content.link);
-  modalTitle.textContent = content.title;
-  modalBody.textContent = content.description;
+  elements.modalTitle.textContent = content.title;
+  elements.modalBody.textContent = content.description;
   closeButton.textContent = i18next.t('buttons.modalWindow.close');
   readMoreButton.textContent = i18next.t('buttons.modalWindow.readMore');
   element.classList.remove('font-weight-bold');
@@ -56,7 +56,7 @@ const renderPosts = (postsData, state, elements) => {
     const previewButton = document.createElement('button');
     listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     previewButton.classList.add('btn', 'btn-primary', 'btn-sm');
-    const font = !readedPostId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
+    const font = !state.readedPostId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
     const linkAttributes = {
       href: link, class: font, 'data-id': id, target: '_blank', rel: 'noopener noreferrer',
     };
@@ -81,8 +81,8 @@ const renderPosts = (postsData, state, elements) => {
     openBtn.addEventListener('click', (e) => {
       const targetId = e.target.dataset.id;
       const [modalContent] = state.rssData.posts.filter((el) => el.id === targetId);
-      readedPostId.push(targetId);
-      openModal(modalContent);
+      state.readedPostId.push(targetId);
+      openModal(modalContent, elements);
     });
   });
 };

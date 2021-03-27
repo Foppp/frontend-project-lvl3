@@ -73,6 +73,7 @@ export default () => {
       feeds: [],
       posts: [],
     },
+    readedPostId: [],
   };
 
   const elements = {
@@ -82,6 +83,8 @@ export default () => {
     form: document.querySelector('form'),
     feeds: document.querySelector('.feeds'),
     posts: document.querySelector('.posts'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalBody: document.querySelector('.modal-body'),
   };
 
   const watchedState = initView(state, elements);
