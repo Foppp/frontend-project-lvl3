@@ -1,4 +1,5 @@
 import i18next from 'i18next';
+import _ from 'lodash';
 
 export default (data) => {
   const posts = [];
@@ -16,8 +17,9 @@ export default (data) => {
     const description = post.querySelector('description').textContent;
     const link = post.querySelector('link').textContent;
     const date = post.querySelector('pubDate').textContent;
+    const id = _.uniqueId();
     const postData = {
-      title, description, link, date,
+      id, title, description, link, date,
     };
     posts.unshift(postData);
   });

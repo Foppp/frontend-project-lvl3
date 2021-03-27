@@ -4,7 +4,6 @@ import 'bootstrap';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
-import _ from 'lodash';
 import resources from './locales';
 import initView from './view.js';
 import parseXml from './parser.js';
@@ -20,17 +19,14 @@ const getProxyUrl = (url) => {
 const requestData = (url) => axios.get(url)
   .then((response) => response.data.contents);
 
-const generateId = (posts) => posts.map((post) => ({ id: _.uniqueId(), ...post }));
-
 const getNewPosts = (posts, lastUpdate) => posts
   .filter((post) => Date.parse(post.date) > lastUpdate);
 
 const loadData = (watchedState, url) => {
   requestData(getProxyUrl(url)).then((response) => {
     const { feedName, feedDescription, posts } = parseXml(response);
-    const updatedPostsId = generateId(posts);
     watchedState.rssData.feeds.unshift({ feedName, feedDescription });
-    watchedState.rssData.posts.push(...updatedPostsId);
+    watchedState.rssData.posts.push(...posts);
     watchedState.form.processError = null;
     watchedState.form.processState = 'finished';
     watchedState.rssData.url[url] = Date.now();
@@ -50,8 +46,7 @@ const refreshData = (watchedState) => {
     requestData(getProxyUrl(url)).then((response) => {
       const { posts } = parseXml(response);
       const newPosts = getNewPosts(posts, lastUpdate);
-      const updatedId = generateId(newPosts);
-      watchedState.rssData.posts.push(...updatedId);
+      watchedState.rssData.posts.push(...newPosts);
       watchedState.rssData.url[url] = Date.now();
     }).catch(() => {
       watchedState.form.processState = 'failed';
