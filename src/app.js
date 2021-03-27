@@ -65,9 +65,6 @@ export default () => {
     form: {
       processState: 'filling',
       processError: null,
-      fields: {
-        url: '',
-      },
       valid: true,
       error: null,
     },
@@ -104,18 +101,12 @@ export default () => {
     }
   };
 
-  elements.input.addEventListener('input', (e) => {
-    const inputData = e.target.value;
-    watchedState.form.processState = 'filling';
-    watchedState.form.fields.url = inputData;
-  });
-
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const formUrl = formData.get('url');
     watchedState.form.processState = 'sending';
-    const error = validate(watchedState.form.fields);
+    const error = validate({ formUrl });
     if (error) {
       watchedState.form.valid = false;
       watchedState.form.error = error;
