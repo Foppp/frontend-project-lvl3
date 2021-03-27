@@ -4,6 +4,7 @@ import 'bootstrap';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
+import _ from 'lodash';
 import resources from './locales';
 import initView from './view.js';
 import parseXml from './parser.js';
@@ -19,10 +20,7 @@ const getProxyUrl = (url) => {
 const requestData = (url) => axios.get(url)
   .then((response) => response.data.contents);
 
-const generateId = (watchedState, posts) => {
-  const id = watchedState.rssData.posts.length + 1;
-  return posts.map((post, index) => ({ id: index + id, ...post }));
-};
+const generateId = (posts) => posts.map((post) => ({ id: _.uniqueId(), ...post }));
 
 const getNewPosts = (posts, lastUpdate) => posts
   .filter((post) => Date.parse(post.date) > lastUpdate);
