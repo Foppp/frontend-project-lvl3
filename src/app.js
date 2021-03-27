@@ -28,7 +28,7 @@ const getNewPosts = (posts, lastUpdate) => posts
 const loadData = (watchedState, url) => {
   requestData(getProxyUrl(url)).then((response) => {
     const { feedName, feedDescription, posts } = parseXml(response);
-    const updatedPostsId = generateId(watchedState, posts);
+    const updatedPostsId = generateId(posts);
     watchedState.rssData.feeds.unshift({ feedName, feedDescription });
     watchedState.rssData.posts.push(...updatedPostsId);
     watchedState.form.processError = null;
@@ -50,7 +50,7 @@ const refreshData = (watchedState) => {
     requestData(getProxyUrl(url)).then((response) => {
       const { posts } = parseXml(response);
       const newPosts = getNewPosts(posts, lastUpdate);
-      const updatedId = generateId(watchedState, newPosts);
+      const updatedId = generateId(newPosts);
       watchedState.rssData.posts.push(...updatedId);
       watchedState.rssData.url[url] = Date.now();
     }).catch(() => {

@@ -79,7 +79,7 @@ const renderPosts = (postsData, state, elements) => {
 
   modalOpenButtons.forEach((openBtn) => {
     openBtn.addEventListener('click', (e) => {
-      const targetId = Number(e.target.dataset.id);
+      const targetId = e.target.dataset.id;
       const [modalContent] = state.rssData.posts.filter((el) => el.id === targetId);
       readedPostId.push(targetId);
       openModal(modalContent);
