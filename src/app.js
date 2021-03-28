@@ -30,7 +30,6 @@ const loadData = (watchedState, url) => {
     watchedState.form.processError = null;
     watchedState.form.processState = 'finished';
     watchedState.rssData.url[url] = Date.now();
-    console.log(watchedState);
   }).catch((err) => {
     if (err.request) {
       watchedState.form.processError = i18next.t('errors.network');
@@ -74,7 +73,10 @@ export default () => {
       feeds: [],
       posts: [],
     },
-    readedPostId: [],
+    modal: {
+      currentPostId: null,
+      visitedPostsId: [],
+    },
   };
 
   const elements = {
@@ -86,6 +88,7 @@ export default () => {
     posts: document.querySelector('.posts'),
     modalTitle: document.querySelector('.modal-title'),
     modalBody: document.querySelector('.modal-body'),
+    modalOpenButtons: document.querySelectorAll('[data-toggle="modal"]'),
   };
 
   const watchedState = initView(state, elements);
@@ -104,6 +107,14 @@ export default () => {
       return e.message;
     }
   };
+
+  elements.posts.addEventListener('click', (e) => {
+    const targetId = e.target.dataset.id;
+    if (targetId) {
+      watchedState.modal.visitedPostsId.push(targetId);
+      watchedState.modal.currentPostId = targetId;
+    }
+  });
 
   elements.form.addEventListener('submit', (e) => {
     e.preventDefault();
