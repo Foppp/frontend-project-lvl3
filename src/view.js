@@ -6,26 +6,25 @@ const setAttributes = (element, values) => Object.keys(values)
   .forEach((attribute) => {
     element.setAttribute(attribute, values[attribute]);
   });
-const openModal = (content, elements) => {
+
+const openModal = (state, elements) => {
+  const [modalContent] = state.rssData.posts.filter((el) => el.id === state.modal.currentPostId);
   const closeButton = document.querySelector('.btn-secondary');
   const readMoreButton = document.querySelector('.full-article');
-  const element = document.querySelector(`[data-id="${content.id}"]`);
-  readMoreButton.setAttribute('href', content.link);
-  elements.modalTitle.textContent = content.title;
-  elements.modalBody.textContent = content.description;
+  readMoreButton.setAttribute('href', modalContent.link);
+  elements.modalTitle.textContent = modalContent.title;
+  elements.modalBody.textContent = modalContent.description;
   closeButton.textContent = i18next.t('buttons.modalWindow.close');
   readMoreButton.textContent = i18next.t('buttons.modalWindow.readMore');
-  element.classList.remove('font-weight-bold');
-  element.classList.add('font-weight-normal');
 };
 
-const renderFeeds = (feedsData, elements) => {
+const renderFeeds = (state, elements) => {
   const mainFeedsTitle = document.createElement('h2');
   const feedsGroup = document.createElement('ul');
   feedsGroup.setAttribute('class', 'list-group');
   feedsGroup.classList.add('mb-5');
   mainFeedsTitle.textContent = i18next.t('feeds');
-  feedsData.forEach(({ feedName, feedDescription }) => {
+  state.rssData.feeds.forEach(({ feedName, feedDescription }) => {
     const listItem = document.createElement('li');
     listItem.setAttribute('class', 'list-group-item');
     const title = document.createElement('h3');
@@ -41,18 +40,18 @@ const renderFeeds = (feedsData, elements) => {
   elements.feeds.appendChild(feedsGroup);
 };
 
-const renderPosts = (postsData, state, elements) => {
+const renderPosts = (state, elements) => {
   const mainPostsTitle = document.createElement('h2');
   const listGroup = document.createElement('ul');
   listGroup.setAttribute('class', 'list-group');
   mainPostsTitle.textContent = i18next.t('posts');
-  postsData.forEach(({ id, title, link }) => {
+  state.rssData.posts.forEach(({ id, title, link }) => {
     const listItem = document.createElement('li');
     const linkElement = document.createElement('a');
     const previewButton = document.createElement('button');
     listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     previewButton.classList.add('btn', 'btn-primary', 'btn-sm');
-    const font = !state.readedPostId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
+    const font = !state.modal.visitedPostsId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
     const linkAttributes = {
       href: link, class: font, 'data-id': id, target: '_blank', rel: 'noopener noreferrer',
     };
@@ -70,17 +69,6 @@ const renderPosts = (postsData, state, elements) => {
   elements.posts.innerHTML = '';
   elements.posts.appendChild(mainPostsTitle);
   elements.posts.appendChild(listGroup);
-
-  const modalOpenButtons = document.querySelectorAll('[data-toggle="modal"]');
-
-  modalOpenButtons.forEach((openBtn) => {
-    openBtn.addEventListener('click', (e) => {
-      const targetId = e.target.dataset.id;
-      const [modalContent] = state.rssData.posts.filter((el) => el.id === targetId);
-      state.readedPostId.push(targetId);
-      openModal(modalContent, elements);
-    });
-  });
 };
 
 const processStateHandler = (processState, elements) => {
@@ -124,8 +112,12 @@ const initView = (state, elements) => {
     'form.processState': (value) => processStateHandler(value, elements),
     'form.error': (value) => renderError(value, elements),
     'form.processError': (value) => renderError(value, elements),
-    'rssData.feeds': (value) => renderFeeds(value, elements),
-    'rssData.posts': (value) => renderPosts(value, state, elements),
+    'rssData.feeds': () => renderFeeds(state, elements),
+    'rssData.posts': () => renderPosts(state, elements),
+    'modal.currentPostId': () => {
+      openModal(state, elements);
+      renderPosts(state, elements);
+    },
   };
 
   const watchedState = onChange(state, (path, value) => {
