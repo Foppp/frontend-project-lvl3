@@ -30,6 +30,7 @@ const loadData = (watchedState, url) => {
     watchedState.form.processError = null;
     watchedState.form.processState = 'finished';
     watchedState.rssData.url[url] = Date.now();
+    console.log(watchedState);
   }).catch((err) => {
     if (err.request) {
       watchedState.form.processError = i18next.t('errors.network');
@@ -109,7 +110,7 @@ export default () => {
     const formData = new FormData(e.target);
     const formUrl = formData.get('url');
     watchedState.form.processState = 'sending';
-    const error = validate({ formUrl });
+    const error = validate({ url: formUrl });
     if (error) {
       watchedState.form.valid = false;
       watchedState.form.error = error;
@@ -121,11 +122,7 @@ export default () => {
     }
   });
 
-  const refreshTimer = setTimeout(function reload() {
-    const urlList = watchedState.rssData.url;
-    if (urlList.length === 0) {
-      clearTimeout(refreshTimer);
-    }
+  setTimeout(function reload() {
     refreshData(watchedState);
     setTimeout(reload, refreshDelay);
   }, refreshDelay);

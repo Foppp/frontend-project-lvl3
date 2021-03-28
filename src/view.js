@@ -2,15 +2,11 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
 
-// const readedPostId = [];
-
 const setAttributes = (element, values) => Object.keys(values)
   .forEach((attribute) => {
     element.setAttribute(attribute, values[attribute]);
   });
 const openModal = (content, elements) => {
-  // const modalTitle = document.querySelector('.modal-title');
-  // const modalBody = document.querySelector('.modal-body');
   const closeButton = document.querySelector('.btn-secondary');
   const readMoreButton = document.querySelector('.full-article');
   const element = document.querySelector(`[data-id="${content.id}"]`);
