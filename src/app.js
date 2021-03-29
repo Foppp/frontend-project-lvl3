@@ -26,15 +26,16 @@ const loadData = (watchedState, url) => {
   requestData(getProxyUrl(url)).then((response) => {
     const { feedName, feedDescription, posts } = parseXml(response);
     watchedState.rssData.feeds.unshift({ feedName, feedDescription });
+    console.log(watchedState.rssData.feeds);
     watchedState.rssData.posts.push(...posts);
-    watchedState.form.processError = null;
+    watchedState.form.error = null;
     watchedState.form.processState = 'finished';
     watchedState.rssData.url[url] = Date.now();
   }).catch((err) => {
     if (err.request) {
-      watchedState.form.processError = i18next.t('errors.network');
+      watchedState.form.error = i18next.t('errors.network');
     } else {
-      watchedState.form.processError = err.message;
+      watchedState.form.error = err.message;
     }
     watchedState.form.processState = 'failed';
   });
@@ -64,9 +65,8 @@ export default () => {
   const state = {
     form: {
       processState: 'filling',
-      processError: null,
-      valid: true,
       error: null,
+      valid: true,
     },
     rssData: {
       url: {},

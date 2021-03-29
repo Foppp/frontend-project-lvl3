@@ -71,8 +71,8 @@ const renderPosts = (state, elements) => {
   elements.posts.appendChild(listGroup);
 };
 
-const processStateHandler = (processState, elements) => {
-  switch (processState) {
+const processStateHandler = (state, elements) => {
+  switch (state.form.processState) {
     case 'filling':
       elements.submitButton.disabled = false;
       elements.input.readOnly = false;
@@ -96,22 +96,21 @@ const processStateHandler = (processState, elements) => {
       elements.input.focus();
       break;
     default:
-      throw new Error(`Uknown state ${processState}`);
+      throw new Error(`Uknown state ${state.form.processState}`);
   }
 };
 
-const renderError = (error, elements) => {
+const renderError = (state, elements) => {
   elements.feedback.removeAttribute('class');
   elements.feedback.classList.add('feedback', 'text-danger');
   elements.input.classList.add('is-invalid');
-  elements.feedback.textContent = error;
+  elements.feedback.textContent = state.form.error;
 };
 
 const initView = (state, elements) => {
   const mapping = {
-    'form.processState': (value) => processStateHandler(value, elements),
-    'form.error': (value) => renderError(value, elements),
-    'form.processError': (value) => renderError(value, elements),
+    'form.processState': () => processStateHandler(state, elements),
+    'form.error': () => renderError(state, elements),
     'rssData.feeds': () => renderFeeds(state, elements),
     'rssData.posts': () => renderPosts(state, elements),
     'modal.currentPostId': () => {
