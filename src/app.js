@@ -4,6 +4,7 @@ import 'bootstrap';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
+import _ from 'lodash';
 import resources from './locales';
 import initView from './view.js';
 import parseXml from './parser.js';
@@ -25,12 +26,13 @@ const getNewPosts = (posts, lastUpdate) => posts
 const loadData = (watchedState, url) => {
   requestData(getProxyUrl(url)).then((response) => {
     const { feedName, feedDescription, posts } = parseXml(response);
-    watchedState.rssData.feeds.unshift({ feedName, feedDescription });
-    console.log(watchedState.rssData.feeds);
+    const loadDate = Date.now();
+    watchedState.rssData.feeds.unshift({
+      url, feedName, feedDescription, loadDate,
+    });
     watchedState.rssData.posts.push(...posts);
     watchedState.form.error = null;
     watchedState.form.processState = 'finished';
-    watchedState.rssData.url[url] = Date.now();
   }).catch((err) => {
     if (err.request) {
       watchedState.form.error = i18next.t('errors.network');
@@ -42,13 +44,13 @@ const loadData = (watchedState, url) => {
 };
 
 const refreshData = (watchedState) => {
-  const urlList = watchedState.rssData.url;
-  Object.entries(urlList).forEach(([url, lastUpdate]) => {
+  const feedsList = watchedState.rssData.feeds;
+  feedsList.forEach(({ url, loadDate }) => {
     requestData(getProxyUrl(url)).then((response) => {
       const { posts } = parseXml(response);
-      const newPosts = getNewPosts(posts, lastUpdate);
+      const newPosts = getNewPosts(posts, loadDate);
       watchedState.rssData.posts.push(...newPosts);
-      watchedState.rssData.url[url] = Date.now();
+      loadDate = Date.now();
     }).catch(() => {
       watchedState.form.processState = 'failed';
     });
@@ -69,7 +71,6 @@ export default () => {
       valid: true,
     },
     rssData: {
-      url: {},
       feeds: [],
       posts: [],
     },
@@ -98,7 +99,7 @@ export default () => {
       url: yup
         .string()
         .url(i18next.t('errors.url'))
-        .test('doubleUrl', i18next.t('errors.doubleUrl'), (val) => !watchedState.rssData.url[val]),
+        .test('doubleUrl', i18next.t('errors.doubleUrl'), (val) => !_.some(watchedState.rssData.feeds, ['url', val])),
     });
     try {
       schema.validateSync(value);
