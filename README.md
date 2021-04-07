@@ -15,4 +15,4 @@ make develop
 ```
 
 
-[RSS Agregator Example](https://test-mocha-eight.vercel.app/)
+[RSS Agregator Example](https://rss-feed-project-chimikjunior.vercel.app/)
