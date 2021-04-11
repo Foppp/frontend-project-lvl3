@@ -34,7 +34,7 @@ const loadData = (watchedState, url) => {
     watchedState.form.processState = 'finished';
   }).catch((err) => {
     if (err.request) {
-      watchedState.form.error = i18next.t('errors.network');
+      watchedState.form.error = 'network';
     } else {
       watchedState.form.error = err.message;
     }
@@ -116,7 +116,6 @@ export default () => {
       schema.validateSync(value);
       return null;
     } catch (e) {
-      console.log(e.message);
       return e.message;
     }
   };
