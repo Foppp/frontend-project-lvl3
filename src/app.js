@@ -4,7 +4,6 @@ import 'bootstrap';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
-import _ from 'lodash';
 import resources from './locales';
 import initView from './view.js';
 import parseXml from './parser.js';
@@ -58,12 +57,6 @@ const refreshData = (watchedState) => {
 };
 
 export default () => {
-  i18next.init({
-    lng: 'ru',
-    debug: false,
-    resources,
-  });
-
   const state = {
     form: {
       processState: 'filling',
@@ -79,6 +72,24 @@ export default () => {
       visitedPostsId: [],
     },
   };
+  const newInstance = i18next.createInstance({
+    lng: 'ru',
+    debug: false,
+    resources,
+  }, (err, t) => {
+    if (err) {
+      return;
+    }
+    yup.setLocale({
+      string: {
+        url: 'url',
+      },
+      mixed: {
+        notOneOf: 'doubleUrl',
+      },
+    });
+    t();
+  });
 
   const elements = {
     submitButton: document.querySelector('[aria-label="add"]'),
@@ -92,19 +103,20 @@ export default () => {
     modalOpenButtons: document.querySelectorAll('[data-toggle="modal"]'),
   };
 
-  const watchedState = initView(state, elements);
+  const watchedState = initView(state, elements, newInstance);
 
   const validate = (value) => {
     const schema = yup.object().shape({
       url: yup
         .string()
-        .url(i18next.t('errors.url'))
-        .test('doubleUrl', i18next.t('errors.doubleUrl'), (val) => !_.some(watchedState.rssData.feeds, ['url', val])),
+        .url()
+        .notOneOf(watchedState.rssData.feeds.map(({ url }) => url)),
     });
     try {
       schema.validateSync(value);
       return null;
     } catch (e) {
+      console.log(e.message);
       return e.message;
     }
   };
@@ -129,7 +141,7 @@ export default () => {
       watchedState.form.processState = 'failed';
     } else {
       watchedState.form.valid = true;
-      watchedState.form.error = null;
+      // watchedState.form.error = null;
       loadData(watchedState, formUrl);
     }
   });

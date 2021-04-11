@@ -1,29 +1,29 @@
 /* eslint-disable no-param-reassign */
 import onChange from 'on-change';
-import i18next from 'i18next';
+// import i18next from 'i18next';
 
 const setAttributes = (element, values) => Object.keys(values)
   .forEach((attribute) => {
     element.setAttribute(attribute, values[attribute]);
   });
 
-const openModal = (state, elements) => {
+const openModal = (state, elements, translate) => {
   const [modalContent] = state.rssData.posts.filter((el) => el.id === state.modal.currentPostId);
   const closeButton = document.querySelector('.btn-secondary');
   const readMoreButton = document.querySelector('.full-article');
   readMoreButton.setAttribute('href', modalContent.link);
   elements.modalTitle.textContent = modalContent.title;
   elements.modalBody.textContent = modalContent.description;
-  closeButton.textContent = i18next.t('buttons.modalWindow.close');
-  readMoreButton.textContent = i18next.t('buttons.modalWindow.readMore');
+  closeButton.textContent = translate.t('buttons.modalWindow.close');
+  readMoreButton.textContent = translate.t('buttons.modalWindow.readMore');
 };
 
-const renderFeeds = (state, elements) => {
+const renderFeeds = (state, elements, translate) => {
   const mainFeedsTitle = document.createElement('h2');
   const feedsGroup = document.createElement('ul');
   feedsGroup.setAttribute('class', 'list-group');
   feedsGroup.classList.add('mb-5');
-  mainFeedsTitle.textContent = i18next.t('feeds');
+  mainFeedsTitle.textContent = translate.t('feeds');
   state.rssData.feeds.forEach(({ feedName, feedDescription }) => {
     const listItem = document.createElement('li');
     listItem.setAttribute('class', 'list-group-item');
@@ -40,11 +40,11 @@ const renderFeeds = (state, elements) => {
   elements.feeds.appendChild(feedsGroup);
 };
 
-const renderPosts = (state, elements) => {
+const renderPosts = (state, elements, translate) => {
   const mainPostsTitle = document.createElement('h2');
   const listGroup = document.createElement('ul');
   listGroup.setAttribute('class', 'list-group');
-  mainPostsTitle.textContent = i18next.t('posts');
+  mainPostsTitle.textContent = translate.t('posts');
   state.rssData.posts.forEach(({ id, title, link }) => {
     const listItem = document.createElement('li');
     const linkElement = document.createElement('a');
@@ -61,7 +61,7 @@ const renderPosts = (state, elements) => {
     setAttributes(linkElement, linkAttributes);
     setAttributes(previewButton, buttonAttributes);
     linkElement.textContent = title;
-    previewButton.textContent = i18next.t('buttons.preview');
+    previewButton.textContent = translate.t('buttons.preview');
     listItem.appendChild(linkElement);
     listItem.appendChild(previewButton);
     listGroup.prepend(listItem);
@@ -71,7 +71,7 @@ const renderPosts = (state, elements) => {
   elements.posts.appendChild(listGroup);
 };
 
-const processStateHandler = (state, elements) => {
+const processStateHandler = (state, elements, translate) => {
   switch (state.form.processState) {
     case 'filling':
       elements.submitButton.disabled = false;
@@ -91,7 +91,7 @@ const processStateHandler = (state, elements) => {
       elements.feedback.removeAttribute('class');
       elements.feedback.classList.add('feedback', 'text-success');
       elements.input.classList.remove('is-invalid');
-      elements.feedback.textContent = i18next.t('loadSuccess');
+      elements.feedback.textContent = translate.t('loadSuccess');
       elements.form.reset();
       elements.input.focus();
       break;
@@ -100,28 +100,34 @@ const processStateHandler = (state, elements) => {
   }
 };
 
-const renderError = (state, elements) => {
+const renderError = (state, elements, translate) => {
   elements.feedback.removeAttribute('class');
   elements.feedback.classList.add('feedback', 'text-danger');
   elements.input.classList.add('is-invalid');
-  elements.feedback.textContent = state.form.error;
+  elements.feedback.textContent = translate.t(`errors.${state.form.error}`);
 };
 
-const initView = (state, elements) => {
-  const mapping = {
-    'form.processState': () => processStateHandler(state, elements),
-    'form.error': () => renderError(state, elements),
-    'rssData.feeds': () => renderFeeds(state, elements),
-    'rssData.posts': () => renderPosts(state, elements),
-    'modal.currentPostId': () => {
-      openModal(state, elements);
-      renderPosts(state, elements);
-    },
-  };
-
-  const watchedState = onChange(state, (path, value) => {
-    if (mapping[path]) {
-      mapping[path](value);
+const initView = (state, elements, translate) => {
+  const watchedState = onChange(state, (path) => {
+    console.log(path);
+    switch (path) {
+      case 'form.processState':
+        processStateHandler(state, elements, translate);
+        break;
+      case 'form.error':
+        renderError(state, elements, translate);
+        break;
+      case 'rssData.feeds':
+        renderFeeds(state, elements, translate);
+        break;
+      case 'rssData.posts':
+        renderPosts(state, elements, translate);
+        break;
+      case 'modal.currentPostId':
+        openModal(state, elements, translate);
+        renderPosts(state, elements, translate);
+        break;
+      default:
     }
   });
   return watchedState;

@@ -1,4 +1,3 @@
-import i18next from 'i18next';
 import _ from 'lodash';
 
 export default (data) => {
@@ -7,7 +6,7 @@ export default (data) => {
   const xmlDoc = parser.parseFromString(data, 'application/xml');
   const parsererror = xmlDoc.querySelector('parsererror');
   if (parsererror) {
-    throw new Error(i18next.t('errors.xml'));
+    throw new Error('xml');
   }
   const feedName = xmlDoc.querySelector('channel > title').textContent;
   const feedDescription = xmlDoc.querySelector('channel > description').textContent;
