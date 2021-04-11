@@ -140,7 +140,6 @@ export default () => {
       watchedState.form.processState = 'failed';
     } else {
       watchedState.form.valid = true;
-      // watchedState.form.error = null;
       loadData(watchedState, formUrl);
     }
   });

@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import onChange from 'on-change';
-// import i18next from 'i18next';
 
 const setAttributes = (element, values) => Object.keys(values)
   .forEach((attribute) => {
@@ -109,7 +108,6 @@ const renderError = (state, elements, translate) => {
 
 const initView = (state, elements, translate) => {
   const watchedState = onChange(state, (path) => {
-    console.log(path);
     switch (path) {
       case 'form.processState':
         processStateHandler(state, elements, translate);
