@@ -34,11 +34,11 @@ const loadData = (watchedState, url) => {
     watchedState.form.processState = 'finished';
   }).catch((err) => {
     switch (err.message) {
-      case 'Network Error':
-        watchedState.form.error = 'network';
-        break;
       case 'Parsing Error':
         watchedState.form.error = 'xml';
+        break;
+      case 'Network Error':
+        watchedState.form.error = 'network';
         break;
       default:
         watchedState.form.error = 'unknown';
