@@ -12,7 +12,7 @@ export default {
     errors: {
       url: 'Ссылка должна быть валидным URL',
       doubleUrl: 'RSS уже существует',
-      network: 'Ошибка Сети',
+      network: 'Ошибка сети',
       unknown: 'Неизвестная ошибка',
       xml: 'Ресурс не содержит валидный RSS',
     },
