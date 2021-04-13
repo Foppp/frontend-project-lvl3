@@ -147,4 +147,6 @@ export default () => {
     refreshData(watchedState);
     setTimeout(reload, refreshDelay);
   }, refreshDelay);
+
+  return newInstance;
 };
