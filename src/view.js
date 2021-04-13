@@ -100,6 +100,7 @@ const processStateHandler = (state, elements, translate) => {
 };
 
 const renderError = (state, elements, translate) => {
+  console.log(state.form.error);
   elements.feedback.removeAttribute('class');
   elements.feedback.classList.add('feedback', 'text-danger');
   elements.input.classList.add('is-invalid');

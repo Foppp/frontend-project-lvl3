@@ -82,7 +82,7 @@ export default () => {
     lng: 'ru',
     debug: false,
     resources,
-  }).then(() => {
+  }).then((t) => {
     yup.setLocale({
       string: {
         url: 'url',
@@ -91,6 +91,7 @@ export default () => {
         notOneOf: 'doubleUrl',
       },
     });
+    t();
   });
 
   const elements = {
