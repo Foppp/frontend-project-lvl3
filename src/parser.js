@@ -6,7 +6,7 @@ export default (data) => {
   const xmlDoc = parser.parseFromString(data, 'application/xml');
   const parsererror = xmlDoc.querySelector('parsererror');
   if (parsererror) {
-    throw new Error('xml');
+    throw new Error('Parsing Error');
   }
   const feedName = xmlDoc.querySelector('channel > title').textContent;
   const feedDescription = xmlDoc.querySelector('channel > description').textContent;
