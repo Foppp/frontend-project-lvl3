@@ -22,6 +22,16 @@ const requestData = (url) => axios.get(url)
 const getNewPosts = (posts, lastUpdate) => posts
   .filter((post) => Date.parse(post.date) > lastUpdate);
 
+const getErrorType = (error) => {
+  switch (error) {
+    case 'Network Error':
+      return 'network';
+    case 'Parsing Error':
+      return 'xml';
+    default:
+      return 'unknown';
+  }
+};
 const loadData = (watchedState, url) => {
   requestData(getProxyUrl(url)).then((response) => {
     const { feedName, feedDescription, posts } = parseXml(response);
@@ -33,23 +43,13 @@ const loadData = (watchedState, url) => {
     watchedState.form.error = null;
     watchedState.form.processState = 'finished';
   }).catch((err) => {
-    if (err.request) {
-      watchedState.form.error = 'network';
-    } else if (err.message === 'Parsing Error') {
-      watchedState.form.error = 'xml';
-    } else {
-      watchedState.form.error = 'unknown';
-    }
-    // switch (err.message) {
-    //   case 'Parsing Error':
-    //     watchedState.form.error = 'xml';
-    //     break;
-    //   case 'Network Error':
-    //     watchedState.form.error = 'network';
-    //     break;
-    //   default:
-    //     watchedState.form.error = 'unknown';
-    //     break;
+    watchedState.form.error = getErrorType(err.message);
+    // if (err.request) {
+    //   watchedState.form.error = 'network';
+    // } else if (err.message === 'Parsing Error') {
+    //   watchedState.form.error = 'xml';
+    // } else {
+    //   watchedState.form.error = 'unknown';
     // }
     watchedState.form.processState = 'failed';
   });
