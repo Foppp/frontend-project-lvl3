@@ -33,13 +33,16 @@ const loadData = (watchedState, url) => {
     watchedState.form.error = null;
     watchedState.form.processState = 'finished';
   }).catch((err) => {
-    if (err.request) {
-      watchedState.form.error = 'network';
-    }
-    if (err.message === 'Parsing Error') {
-      watchedState.form.error = 'xml';
-    } else {
-      watchedState.form.error = 'unknown';
+    switch (err.message) {
+      case 'Network Error':
+        watchedState.form.error = 'network';
+        break;
+      case 'Parsing Error':
+        watchedState.form.error = 'xml';
+        break;
+      default:
+        watchedState.form.error = 'unknown';
+        break;
     }
     watchedState.form.processState = 'failed';
   });
