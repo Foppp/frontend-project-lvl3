@@ -50,7 +50,7 @@ const renderPosts = (state, elements, translate) => {
     const previewButton = document.createElement('button');
     listItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
     previewButton.classList.add('btn', 'btn-primary', 'btn-sm');
-    const font = !state.modal.visitedPostsId.includes(id) ? 'font-weight-bold' : 'font-weight-normal';
+    const font = !state.visitedPostsId.has(id) ? 'font-weight-bold' : 'font-weight-normal';
     const linkAttributes = {
       href: link, class: font, 'data-id': id, target: '_blank', rel: 'noopener noreferrer',
     };
@@ -126,6 +126,7 @@ const initView = (state, elements, translate) => {
         renderPosts(state, elements, translate);
         break;
       default:
+        break;
     }
   });
   return watchedState;

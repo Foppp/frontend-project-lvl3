@@ -36,7 +36,7 @@ const loadData = (watchedState, url) => {
     if (err.request) {
       watchedState.form.error = 'network';
     } else {
-      watchedState.form.error = err.message;
+      watchedState.form.error = 'unknown';
     }
     watchedState.form.processState = 'failed';
   });
@@ -50,9 +50,7 @@ const refreshData = (watchedState) => {
       const newPosts = getNewPosts(posts, loadDate);
       watchedState.rssData.posts.push(...newPosts);
       loadDate = Date.now();
-    }).catch(() => {
-      watchedState.form.processState = 'failed';
-    });
+    }).catch(() => {});
   });
 };
 
@@ -67,19 +65,18 @@ export default () => {
       feeds: [],
       posts: [],
     },
+    visitedPostsId: new Set(),
     modal: {
       currentPostId: null,
-      visitedPostsId: [],
     },
   };
-  const newInstance = i18next.createInstance({
+
+  const newInstance = i18next.createInstance();
+  newInstance.init({
     lng: 'ru',
     debug: false,
     resources,
-  }, (err, t) => {
-    if (err) {
-      return;
-    }
+  }).then(() => {
     yup.setLocale({
       string: {
         url: 'url',
@@ -88,7 +85,6 @@ export default () => {
         notOneOf: 'doubleUrl',
       },
     });
-    t();
   });
 
   const elements = {
@@ -123,7 +119,7 @@ export default () => {
   elements.posts.addEventListener('click', (e) => {
     const targetId = e.target.dataset.id;
     if (targetId) {
-      watchedState.modal.visitedPostsId.push(targetId);
+      watchedState.visitedPostsId.add(targetId);
       watchedState.modal.currentPostId = targetId;
     }
   });
