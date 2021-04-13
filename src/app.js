@@ -151,5 +151,5 @@ export default () => {
     setTimeout(reload, refreshDelay);
   }, refreshDelay);
 
-  return newInstance;
+  // return newInstance;
 };
