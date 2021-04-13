@@ -38,8 +38,9 @@ const loadData = (watchedState, url) => {
     }
     if (err.message === 'Parsing Error') {
       watchedState.form.error = 'xml';
+    } else {
+      watchedState.form.error = 'unknown';
     }
-    watchedState.form.error = 'unknown';
     // switch (err.message) {
     //   case 'Parsing Error':
     //     watchedState.form.error = 'xml';
