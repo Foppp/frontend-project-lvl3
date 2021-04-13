@@ -35,6 +35,9 @@ const loadData = (watchedState, url) => {
   }).catch((err) => {
     if (err.request) {
       watchedState.form.error = 'network';
+    }
+    if (err.message === 'Parsing Error') {
+      watchedState.form.error = 'xml';
     } else {
       watchedState.form.error = 'unknown';
     }
