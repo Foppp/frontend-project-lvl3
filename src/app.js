@@ -73,23 +73,6 @@ export default () => {
     },
   };
 
-  const newInstance = i18next.createInstance();
-  newInstance.init({
-    lng: 'ru',
-    debug: false,
-    resources,
-  }).then((t) => {
-    yup.setLocale({
-      string: {
-        url: 'url',
-      },
-      mixed: {
-        notOneOf: 'doubleUrl',
-      },
-    });
-    t();
-  });
-
   const elements = {
     submitButton: document.querySelector('[aria-label="add"]'),
     input: document.querySelector('[aria-label="url"]'),
@@ -102,51 +85,67 @@ export default () => {
     modalOpenButtons: document.querySelectorAll('[data-toggle="modal"]'),
   };
 
-  const watchedState = initView(state, elements, newInstance);
-
-  const validate = (value) => {
-    const schema = yup.object().shape({
-      url: yup
-        .string()
-        .url()
-        .notOneOf(watchedState.rssData.feeds.map(({ url }) => url)),
+  const newInstance = i18next.createInstance();
+  newInstance.init({
+    lng: 'ru',
+    debug: false,
+    resources,
+  }).then(() => {
+    yup.setLocale({
+      string: {
+        url: 'url',
+      },
+      mixed: {
+        notOneOf: 'doubleUrl',
+      },
     });
-    try {
-      schema.validateSync(value);
-      return null;
-    } catch (e) {
-      return e.message;
-    }
-  };
 
-  elements.posts.addEventListener('click', (e) => {
-    const targetId = e.target.dataset.id;
-    if (targetId) {
-      watchedState.visitedPostsId.add(targetId);
-      watchedState.modal.currentPostId = targetId;
-    }
+    const watchedState = initView(state, elements, newInstance);
+
+    const validate = (value) => {
+      const schema = yup.object().shape({
+        url: yup
+          .string()
+          .url()
+          .notOneOf(watchedState.rssData.feeds.map(({ url }) => url)),
+      });
+      try {
+        schema.validateSync(value);
+        return null;
+      } catch (e) {
+        return e.message;
+      }
+    };
+
+    elements.posts.addEventListener('click', (e) => {
+      const targetId = e.target.dataset.id;
+      if (targetId) {
+        watchedState.visitedPostsId.add(targetId);
+        watchedState.modal.currentPostId = targetId;
+      }
+    });
+
+    elements.form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const formUrl = formData.get('url');
+      watchedState.form.processState = 'sending';
+      const error = validate({ url: formUrl });
+      if (error) {
+        watchedState.form.valid = false;
+        watchedState.form.error = error;
+        watchedState.form.processState = 'failed';
+      } else {
+        watchedState.form.valid = true;
+        loadData(watchedState, formUrl);
+      }
+    });
+
+    setTimeout(function reload() {
+      refreshData(watchedState);
+      setTimeout(reload, refreshDelay);
+    }, refreshDelay);
   });
-
-  elements.form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const formUrl = formData.get('url');
-    watchedState.form.processState = 'sending';
-    const error = validate({ url: formUrl });
-    if (error) {
-      watchedState.form.valid = false;
-      watchedState.form.error = error;
-      watchedState.form.processState = 'failed';
-    } else {
-      watchedState.form.valid = true;
-      loadData(watchedState, formUrl);
-    }
-  });
-
-  setTimeout(function reload() {
-    refreshData(watchedState);
-    setTimeout(reload, refreshDelay);
-  }, refreshDelay);
 
   return newInstance;
 };
