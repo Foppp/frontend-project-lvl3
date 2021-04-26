@@ -14,7 +14,7 @@ export default {
       doubleUrl: 'RSS уже существует',
       network: 'Ошибка сети',
       unknown: 'Неизвестная ошибка',
-      xml: 'Ресурс не содержит валидный RSS',
+      parser: 'Ресурс не содержит валидный RSS',
     },
     loadSuccess: 'RSS успешно загружен',
   },

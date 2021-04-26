@@ -1,12 +1,12 @@
-import _ from 'lodash';
-
 export default (data) => {
   const posts = [];
   const parser = new DOMParser();
   const xmlDoc = parser.parseFromString(data, 'application/xml');
   const parsererror = xmlDoc.querySelector('parsererror');
   if (parsererror) {
-    throw new Error('Parsing Error');
+    const error = new Error('parser');
+    error.isParserError = true;
+    throw error;
   }
   const feedName = xmlDoc.querySelector('channel > title').textContent;
   const feedDescription = xmlDoc.querySelector('channel > description').textContent;
@@ -15,11 +15,7 @@ export default (data) => {
     const title = post.querySelector('title').textContent;
     const description = post.querySelector('description').textContent;
     const link = post.querySelector('link').textContent;
-    const date = post.querySelector('pubDate').textContent;
-    const id = _.uniqueId();
-    const postData = {
-      id, title, description, link, date,
-    };
+    const postData = { title, description, link };
     posts.unshift(postData);
   });
   return { feedName, feedDescription, posts };

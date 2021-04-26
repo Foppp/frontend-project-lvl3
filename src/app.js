@@ -4,6 +4,7 @@ import 'bootstrap';
 import * as yup from 'yup';
 import axios from 'axios';
 import i18next from 'i18next';
+import _ from 'lodash';
 import resources from './locales';
 import initView from './view.js';
 import parseXml from './parser.js';
@@ -11,32 +12,33 @@ import parseXml from './parser.js';
 const refreshDelay = 5000;
 
 const getProxyUrl = (url) => {
-  const corsProxyUrl = new URL('https://hexlet-allorigins.herokuapp.com/get');
-  const newUrl = new URL(`?disableCache=true&url=${encodeURIComponent(url)}`, corsProxyUrl);
-  return newUrl.toString();
+  const corsProxyUrl = new URL('/get', 'https://hexlet-allorigins.herokuapp.com');
+  corsProxyUrl.searchParams.set('disableCache', 'true');
+  corsProxyUrl.searchParams.set('url', url);
+  return corsProxyUrl.toString();
 };
 
 const requestData = (url) => axios.get(url)
   .then((response) => response.data.contents);
 
-const getNewPosts = (posts, lastUpdate) => posts
-  .filter((post) => Date.parse(post.date) > lastUpdate);
+const getNewPosts = (oldPosts, newPosts) => _.differenceBy(newPosts, oldPosts, 'title');
+
+const makeId = (posts) => posts.map((post) => ({ id: _.uniqueId(), ...post }));
 
 const loadData = (watchedState, url) => {
   requestData(getProxyUrl(url)).then((response) => {
     const { feedName, feedDescription, posts } = parseXml(response);
-    const loadDate = Date.now();
     watchedState.rssData.feeds.unshift({
-      url, feedName, feedDescription, loadDate,
+      url, feedName, feedDescription,
     });
-    watchedState.rssData.posts.push(...posts);
+    watchedState.rssData.posts.push(...makeId(posts));
     watchedState.form.error = null;
     watchedState.form.processState = 'finished';
   }).catch((err) => {
     if (err.request) {
       watchedState.form.error = 'network';
-    } else if (err.message === 'Parsing Error') {
-      watchedState.form.error = 'xml';
+    } else if (err.isParserError) {
+      watchedState.form.error = err.message;
     } else {
       watchedState.form.error = 'unknown';
     }
@@ -46,12 +48,11 @@ const loadData = (watchedState, url) => {
 
 const refreshData = (watchedState) => {
   const feedsList = watchedState.rssData.feeds;
-  feedsList.forEach(({ url, loadDate }) => {
+  feedsList.forEach(({ url }) => {
     requestData(getProxyUrl(url)).then((response) => {
       const { posts } = parseXml(response);
-      const newPosts = getNewPosts(posts, loadDate);
-      watchedState.rssData.posts.push(...newPosts);
-      loadDate = Date.now();
+      const newPosts = getNewPosts(watchedState.rssData.posts, posts);
+      watchedState.rssData.posts.push(...makeId(newPosts));
     }).catch(() => {});
   });
 };
