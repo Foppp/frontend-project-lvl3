@@ -19,7 +19,8 @@
 
 [RSS Agregator Example](https://rss-feed-project-chimikjunior.vercel.app/)
 
-<img width="1046" alt="example" src="https://user-images.githubusercontent.com/53577903/134665845-48b7bd95-459e-4e7e-81df-c75d1e3371e1.png">
+<img width="566" alt="example" src="https://user-images.githubusercontent.com/53577903/134666056-de9c3dcb-b730-4e4f-ab35-c196af0fb09b.png">
+
 
 #### Install ####
 ```
