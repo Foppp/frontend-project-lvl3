@@ -14,13 +14,12 @@
 * Parsing RSS feeds
 * Using i18-next to organize texts, locales
 * Build with WebPack
-* Deploy on Varcel
+* Deploy on Varce
 
 
 [RSS Agregator Example](https://rss-feed-project-chimikjunior.vercel.app/)
 
-<!-- [![image info]('https://photos.app.goo.gl/pYTJrwh4Ccs2gUgR9')](https://slack-chat-hexlet.herokuapp.com/) -->
-![alt text](https://photos.app.goo.gl/pYTJrwh4Ccs2gUgR9)
+<img width="1046" alt="example" src="https://user-images.githubusercontent.com/53577903/134665845-48b7bd95-459e-4e7e-81df-c75d1e3371e1.png">
 
 #### Install ####
 ```
