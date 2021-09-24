@@ -19,7 +19,7 @@
 
 [RSS Agregator Example](https://rss-feed-project-chimikjunior.vercel.app/)
 
-[![image info](https://photos.app.goo.gl/pYTJrwh4Ccs2gUgR9)](https://slack-chat-hexlet.herokuapp.com/)
+[![image info]('https://photos.app.goo.gl/pYTJrwh4Ccs2gUgR9')](https://slack-chat-hexlet.herokuapp.com/)
 
 
 #### Install ####
