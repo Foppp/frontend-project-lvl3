@@ -4,7 +4,7 @@
 ### Hexlet tests and linter status:
 [![Actions Status](https://github.com/Foppp/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/Foppp/frontend-project-lvl3/actions)
 
-## "RSS aggregator" - is a service that allows you to monitor and view several RSS feeds in a comfortable format.
+## "RSS aggregator" - Service for aggregating RSS feeds, allows you to add an unlimited number of RSS feeds. Service is updates them and adds new entries. The architecture of the application is based on the MVC design pattern. The main goal is to learn how to work with the DOM API, validate data in forms, make asynchronous HTTP requests, and handle errors. The whole project is done on promises.
 
 * Designing an architecture according to the MVC pattern
 * Work with DOM API (selectors, events and HTML generation)
